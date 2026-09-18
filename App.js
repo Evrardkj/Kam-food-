@@ -542,8 +542,8 @@ import {
     ]
   }
 ];
-  }
-];
+  
+
 
 const REGIONS = [
   'Toutes',
