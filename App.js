@@ -1,848 +1,408 @@
-import React, { useEffect, useMemo, useState } from 'react';
+
+      
+      import React, { useMemo, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Image,
+  Modal,
   Pressable,
   SafeAreaView,
   ScrollView,
-  Share,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Speech from 'expo-speech';
 
 const RECIPES = [
   {
     id: '1',
     name: 'Ndolé',
     region: 'Littoral',
-    time: '1 h 30',
-    difficulty: 'Moyen',
-    image:
-      'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80',
+    description: 'Feuilles de ndolé, arachides et viande ou poisson.',
+    image: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=80',
     ingredients: [
-      'Feuilles de ndolé',
-      'Arachides',
-      'Crevettes ou viande',
-      'Oignons',
-      'Ail',
-      'Huile',
-      'Sel',
+      '500 g de feuilles de ndolé',
+      '250 g d’arachides',
+      '300 g de viande ou poisson',
+      '2 oignons',
+      '2 gousses d’ail',
+      'Huile, sel et épices'
     ],
     steps: [
-      'Nettoyer et blanchir les feuilles de ndolé.',
-      'Préparer et griller les arachides puis les écraser.',
-      'Faire revenir les oignons, l’ail et la viande ou les crevettes.',
-      'Ajouter les arachides et les feuilles de ndolé.',
-      'Laisser mijoter puis servir chaud.',
-    ],
+      'Nettoyer et préparer les feuilles de ndolé.',
+      'Cuire les arachides puis les écraser.',
+      'Faire revenir les oignons et l’ail dans un peu d’huile.',
+      'Ajouter la viande ou le poisson et cuire.',
+      'Ajouter les arachides puis les feuilles de ndolé.',
+      'Laisser mijoter quelques minutes et servir chaud.'
+    ]
   },
-
   {
     id: '2',
     name: 'Poulet DG',
-    region: 'Littoral',
-    time: '1 h',
-    difficulty: 'Moyen',
-    image:
-      'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80',
+    region: 'Centre',
+    description: 'Poulet mijoté avec plantain et légumes.',
+    image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=1000&q=80',
     ingredients: [
-      'Poulet',
-      'Plantains mûrs',
-      'Carottes',
-      'Haricots verts',
-      'Poivrons',
-      'Oignons',
-      'Huile',
+      '1 poulet découpé',
+      '6 bananes plantain',
+      '2 carottes',
+      '1 poivron',
+      '2 tomates',
+      '2 oignons',
+      'Huile, sel et épices'
     ],
     steps: [
-      'Découper et assaisonner le poulet.',
-      'Frire ou rôtir les morceaux de poulet.',
-      'Découper les plantains et les faire dorer.',
-      'Faire revenir les légumes avec les oignons.',
-      'Mélanger le poulet, les plantains et les légumes puis laisser mijoter quelques minutes.',
-    ],
+      'Assaisonner le poulet puis le cuire jusqu’à ce qu’il soit doré.',
+      'Découper et frire les plantains.',
+      'Faire revenir les légumes et les oignons.',
+      'Ajouter le poulet et un peu d’eau.',
+      'Ajouter les plantains à la fin.',
+      'Mélanger délicatement et servir.'
+    ]
   },
-
   {
     id: '3',
     name: 'Eru',
     region: 'Sud-Ouest',
-    time: '1 h 15',
-    difficulty: 'Moyen',
-    image:
-      'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80',
+    description: 'Plat de feuilles traditionnel accompagné de water fufu ou garri.',
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1000&q=80',
     ingredients: [
-      'Eru',
+      'Feuilles d’eru',
       'Waterleaf',
-      'Viande',
-      'Poisson fumé',
-      'Crevettes',
+      'Poisson fumé ou viande',
+      'Crevettes séchées',
       'Huile de palme',
+      'Sel et épices'
     ],
     steps: [
       'Laver et découper les feuilles.',
-      'Cuire la viande et le poisson fumé.',
-      'Ajouter le waterleaf puis l’eru.',
-      'Ajouter les crevettes et l’huile de palme.',
-      'Laisser mijoter jusqu’à obtenir une sauce bien liée.',
-    ],
+      'Cuire la viande ou le poisson.',
+      'Ajouter les feuilles et laisser cuire doucement.',
+      'Ajouter les crevettes et les assaisonnements.',
+      'Verser l’huile de palme.',
+      'Mijoter puis servir avec l’accompagnement choisi.'
+    ]
   },
-
   {
     id: '4',
     name: 'Koki',
-    region: 'Ouest',
-    time: '1 h 30',
-    difficulty: 'Moyen',
-    image:
-      'https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=900&q=80',
+    region: 'Littoral',
+    description: 'Préparation de haricots cuite à la vapeur.',
+    image: 'https://images.unsplash.com/photo-1515543904379-3d757afe72e4?auto=format&fit=crop&w=1000&q=80',
     ingredients: [
-      'Haricots cornille',
+      '500 g de haricots blancs',
       'Huile de palme',
-      'Piment',
-      'Oignons',
-      'Feuilles de bananier',
-      'Sel',
+      'Piment selon le goût',
+      '1 oignon',
+      'Sel'
     ],
     steps: [
-      'Tremper puis moudre les haricots.',
-      'Mélanger avec l’huile de palme, le sel et les aromates.',
-      'Former les portions dans des feuilles de bananier.',
+      'Tremper les haricots puis retirer les peaux.',
+      'Écraser les haricots avec l’oignon et le piment.',
+      'Ajouter le sel et l’huile de palme.',
+      'Verser la préparation dans des feuilles ou des moules.',
       'Cuire à la vapeur jusqu’à ce que le koki soit ferme.',
-    ],
+      'Laisser tiédir avant de servir.'
+    ]
   },
-
   {
     id: '5',
-    name: 'Achu',
+    name: 'Achou',
     region: 'Nord-Ouest',
-    time: '1 h 45',
-    difficulty: 'Difficile',
-    image:
-      'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80',
+    description: 'Taro pilé servi avec une sauce jaune traditionnelle.',
+    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1000&q=80',
     ingredients: [
       'Taro',
-      'Viande',
-      'Huile rouge',
-      'Épices',
-      'Sel',
-      'Eau',
+      'Huile de palme',
+      'Épices jaunes',
+      'Poisson fumé ou viande',
+      'Piment',
+      'Sel'
     ],
     steps: [
       'Cuire le taro jusqu’à ce qu’il soit tendre.',
-      'Piler le taro pour former une pâte lisse.',
-      'Préparer la soupe jaune avec la viande et les épices.',
-      'Ajouter l’huile rouge selon le goût.',
-      'Servir l’achu avec la soupe.',
-    ],
+      'Piler le taro jusqu’à obtenir une pâte homogène.',
+      'Préparer la sauce avec l’huile et les épices.',
+      'Ajouter le poisson ou la viande.',
+      'Rectifier l’assaisonnement.',
+      'Servir l’achou avec la sauce.'
+    ]
   },
-
   {
     id: '6',
-    name: 'Poisson braisé',
-    region: 'Centre',
-    time: '45 min',
-    difficulty: 'Facile',
-    image:
-      'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=900&q=80',
-    ingredients: [
-      'Poisson frais',
-      'Ail',
-      'Gingembre',
-      'Oignons',
-      'Piment',
-      'Citron',
-      'Huile',
-    ],
-    steps: [
-      'Nettoyer et inciser le poisson.',
-      'Écraser l’ail, le gingembre, le piment et les oignons.',
-      'Mariner le poisson avec les épices et le citron.',
-      'Braiser au feu ou au four en retournant régulièrement.',
-      'Servir avec plantain, miondo ou bâtons de manioc.',
-    ],
-  },
-
-  {
-    id: '7',
     name: 'Mbongo Tchobi',
     region: 'Littoral',
-    time: '1 h',
-    difficulty: 'Moyen',
-    image:
-      'https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=900&q=80',
+    description: 'Poisson préparé dans une sauce noire épicée.',
+    image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1000&q=80',
     ingredients: [
-      'Poisson ou viande',
+      '1 poisson entier ou en morceaux',
       'Épices mbongo',
-      'Tomates',
-      'Oignons',
+      '2 tomates',
+      '2 oignons',
       'Ail',
-      'Huile',
+      'Huile et sel'
     ],
     steps: [
-      'Nettoyer le poisson ou préparer la viande.',
-      'Griller légèrement les épices et les aromates.',
-      'Faire revenir la préparation.',
-      'Ajouter le poisson ou la viande et un peu d’eau.',
-      'Cuire doucement jusqu’à obtenir une sauce noire parfumée.',
-    ],
+      'Nettoyer et assaisonner le poisson.',
+      'Faire revenir les oignons et l’ail.',
+      'Ajouter les tomates et les épices mbongo.',
+      'Ajouter le poisson et un peu d’eau.',
+      'Couvrir et laisser mijoter.',
+      'Servir chaud avec l’accompagnement de votre choix.'
+    ]
   },
-
+  {
+    id: '7',
+    name: 'Soupe de pistache',
+    region: 'Ouest',
+    description: 'Sauce épaisse aux graines de pistache.',
+    image: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=80',
+    ingredients: [
+      '300 g de pistaches',
+      '300 g de viande ou poisson',
+      '2 tomates',
+      '1 oignon',
+      'Piment',
+      'Sel et épices'
+    ],
+    steps: [
+      'Écraser les pistaches.',
+      'Préparer et cuire la viande ou le poisson.',
+      'Faire revenir l’oignon et les tomates.',
+      'Ajouter les pistaches progressivement.',
+      'Ajouter de l’eau et laisser cuire doucement.',
+      'Assaisonner et servir.'
+    ]
+  },
   {
     id: '8',
-    name: 'Plantain mûr frit',
-    region: 'National',
-    time: '20 min',
-    difficulty: 'Facile',
-    image:
-      'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80',
-    ingredients: ['Plantains mûrs', 'Huile', 'Sel'],
+    name: 'Plantain mûr sauté',
+    region: 'Est',
+    description: 'Bananes plantain mûres dorées et légèrement épicées.',
+    image: 'https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=1000&q=80',
+    ingredients: [
+      '4 bananes plantain mûres',
+      'Huile',
+      'Sel',
+      'Piment facultatif'
+    ],
     steps: [
       'Éplucher les plantains.',
       'Les couper en morceaux.',
-      'Chauffer l’huile.',
-      'Faire frire jusqu’à obtenir une belle coloration dorée.',
-      'Égoutter et servir.',
-    ],
-  },
+      'Faire chauffer un peu d’huile.',
+      'Faire dorer les morceaux sur chaque face.',
+      'Ajouter une petite pincée de sel.',
+      'Servir chaud.'
+    ]
+  }
 ];
 
 const REGIONS = [
   'Toutes',
-  'Centre',
-  'Littoral',
-  'Ouest',
-  'Nord-Ouest',
-  'Sud-Ouest',
-  'National',
+  ...Array.from(new Set(RECIPES.map((item) => item.region)))
 ];
 
-const FAVORITES_KEY = 'camfood_favorites';
-const SHOPPING_KEY = 'camfood_shopping';
-
-function RecipeCard({
-  recipe,
-  isFavorite,
-  onToggleFavorite,
-  onOpen,
-}) {
-  return (
-    <Pressable
-      style={styles.card}
-      onPress={() => onOpen(recipe)}
-    >
-      <Image
-        source={{ uri: recipe.image }}
-        style={styles.cardImage}
-      />
-
-      <View style={styles.cardBody}>
-        <View style={styles.row}>
-          <Text style={styles.cardTitle}>
-            {recipe.name}
-          </Text>
-
-          <Pressable
-            onPress={() => onToggleFavorite(recipe.id)}
-            hitSlop={10}
-            style={styles.heartButton}
-          >
-            <Text style={styles.heart}>
-              {isFavorite ? '♥' : '♡'}
-            </Text>
-          </Pressable>
-        </View>
-
-        <Text style={styles.muted}>
-          {recipe.region} • {recipe.time} • {recipe.difficulty}
-        </Text>
-      </View>
-    </Pressable>
-  );
-}
-
 export default function App() {
-  const [tab, setTab] = useState('home');
-  const [query, setQuery] = useState('');
+  const [search, setSearch] = useState('');
   const [region, setRegion] = useState('Toutes');
-  const [favorites, setFavorites] = useState([]);
-  const [shopping, setShopping] = useState([]);
   const [selected, setSelected] = useState(null);
 
-  useEffect(() => {
-    loadSavedData();
-  }, []);
-
-  async function loadSavedData() {
-    try {
-      const savedFavorites =
-        await AsyncStorage.getItem(FAVORITES_KEY);
-
-      const savedShopping =
-        await AsyncStorage.getItem(SHOPPING_KEY);
-
-      if (savedFavorites) {
-        const parsedFavorites =
-          JSON.parse(savedFavorites);
-
-        if (Array.isArray(parsedFavorites)) {
-          setFavorites(parsedFavorites);
-        }
-      }
-
-      if (savedShopping) {
-        const parsedShopping =
-          JSON.parse(savedShopping);
-
-        if (Array.isArray(parsedShopping)) {
-          setShopping(parsedShopping);
-        }
-      }
-    } catch (error) {
-      console.log('Erreur de chargement:', error);
-    }
-  }
-
-  async function saveFavorites(nextFavorites) {
-    try {
-      setFavorites(nextFavorites);
-
-      await AsyncStorage.setItem(
-        FAVORITES_KEY,
-        JSON.stringify(nextFavorites)
-      );
-    } catch (error) {
-      Alert.alert(
-        'Erreur',
-        'Impossible d’enregistrer les favoris.'
-      );
-    }
-  }
-
-  async function toggleFavorite(id) {
-    const nextFavorites = favorites.includes(id)
-      ? favorites.filter((item) => item !== id)
-      : [...favorites, id];
-
-    await saveFavorites(nextFavorites);
-  }
-
-  async function addToShoppingList(item) {
-    if (shopping.includes(item)) {
-      return;
-    }
-
-    const nextShopping = [
-      ...shopping,
-      item,
-    ];
-
-    try {
-      setShopping(nextShopping);
-
-      await AsyncStorage.setItem(
-        SHOPPING_KEY,
-        JSON.stringify(nextShopping)
-      );
-    } catch (error) {
-      Alert.alert(
-        'Erreur',
-        'Impossible d’enregistrer la liste de courses.'
-      );
-    }
-  }
-
-  async function removeFromShoppingList(item) {
-    const nextShopping =
-      shopping.filter((value) => value !== item);
-
-    try {
-      setShopping(nextShopping);
-
-      await AsyncStorage.setItem(
-        SHOPPING_KEY,
-        JSON.stringify(nextShopping)
-      );
-    } catch (error) {
-      Alert.alert(
-        'Erreur',
-        'Impossible de modifier la liste de courses.'
-      );
-    }
-  }
-
-  async function clearShoppingList() {
-    try {
-      setShopping([]);
-
-      await AsyncStorage.setItem(
-        SHOPPING_KEY,
-        JSON.stringify([])
-      );
-    } catch (error) {
-      Alert.alert(
-        'Erreur',
-        'Impossible de vider la liste de courses.'
-      );
-    }
-  }
-
-  function speakRecipe(recipe) {
-    Speech.stop();
-
-    const text = [
-      recipe.name,
-      'Ingrédients',
-      ...recipe.ingredients,
-      'Préparation',
-      ...recipe.steps,
-    ].join('. ');
-
-    Speech.speak(text, {
-      language: 'fr-FR',
-      rate: 0.9,
-    });
-  }
-
-  async function shareRecipe(recipe) {
-    const message = [
-      `Cam Food — ${recipe.name}`,
-      '',
-      `Ingrédients : ${recipe.ingredients.join(', ')}`,
-      '',
-      `Préparation : ${recipe.steps.join(' ')}`,
-    ].join('\n');
-
-    try {
-      await Share.share({
-        message,
-        title: recipe.name,
-      });
-    } catch (error) {
-      Alert.alert(
-        'Partager',
-        message
-      );
-    }
-  }
-
   const filteredRecipes = useMemo(() => {
-    const normalizedQuery =
-      query.trim().toLowerCase();
+    const query = search.trim().toLowerCase();
 
     return RECIPES.filter((recipe) => {
-      const matchesQuery =
-        !normalizedQuery ||
-        recipe.name
-          .toLowerCase()
-          .includes(normalizedQuery) ||
-        recipe.ingredients.some((ingredient) =>
-          ingredient
-            .toLowerCase()
-            .includes(normalizedQuery)
-        );
-
       const matchesRegion =
-        region === 'Toutes' ||
-        recipe.region === region;
+        region === 'Toutes' || recipe.region === region;
 
-      return matchesQuery && matchesRegion;
+      const text =
+        `${recipe.name} ${recipe.region} ${recipe.description} ${recipe.ingredients.join(' ')}`
+          .toLowerCase();
+
+      return matchesRegion && (!query || text.includes(query));
     });
-  }, [query, region]);
-
-  function renderRecipe(recipe) {
-    return (
-      <RecipeCard
-        recipe={recipe}
-        isFavorite={favorites.includes(recipe.id)}
-        onToggleFavorite={toggleFavorite}
-        onOpen={setSelected}
-      />
-    );
-  }
+  }, [search, region]);
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="#0B6B3A"
+      />
 
       <View style={styles.header}>
-        <Text style={styles.logo}>
-          CAM <Text style={styles.green}>FOOD</Text>
-        </Text>
-
-        <Text style={styles.tagline}>
-          La cuisine du Cameroun dans ta main 🇨🇲
+        <Text style={styles.logo}>Cam Food</Text>
+        <Text style={styles.subtitle}>
+          La cuisine camerounaise dans votre téléphone
         </Text>
       </View>
 
-      {tab === 'home' && (
+      <View style={styles.content}>
+        <TextInput
+          value={search}
+          onChangeText={setSearch}
+          placeholder="Rechercher une recette ou un ingrédient..."
+          placeholderTextColor="#777"
+          style={styles.search}
+        />
+
+        <Text style={styles.sectionTitle}>Régions</Text>
+
         <ScrollView
-          contentContainerStyle={styles.content}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filters}
         >
-          <View style={styles.hero}>
-            <Text style={styles.heroTitle}>
-              Bienvenue sur Cam Food 👋🏾
-            </Text>
-
-            <Text style={styles.heroText}>
-              Découvre les recettes camerounaises,
-              leurs ingrédients et les étapes
-              de préparation.
-            </Text>
-          </View>
-
-          <Text style={styles.section}>
-            Rechercher
-          </Text>
-
-          <TextInput
-            value={query}
-            onChangeText={setQuery}
-            placeholder="Ndolé, plantain, poisson..."
-            placeholderTextColor="#8A918D"
-            style={styles.search}
-          />
-
-          <Text style={styles.section}>
-            Régions
-          </Text>
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.chips}
-          >
-            {REGIONS.map((item) => (
-              <Pressable
-                key={item}
-                onPress={() => setRegion(item)}
-                style={[
-                  styles.chip,
-                  region === item &&
-                    styles.chipActive,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.chipText,
-                    region === item &&
-                      styles.chipTextActive,
-                  ]}
-                >
-                  {item}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-
-          <Text style={styles.section}>
-            Recettes populaires
-          </Text>
-
-          {filteredRecipes
-            .slice(0, 5)
-            .map((recipe) => (
-              <View key={recipe.id}>
-                {renderRecipe(recipe)}
-              </View>
-            ))}
-
-          {filteredRecipes.length === 0 && (
-            <Text style={styles.empty}>
-              Aucune recette ne correspond à ta recherche.
-            </Text>
-          )}
-        </ScrollView>
-      )}
-
-      {tab === 'recipes' && (
-        <View style={styles.listContainer}>
-          <Text style={styles.section}>
-            Toutes les recettes ({filteredRecipes.length})
-          </Text>
-
-          <TextInput
-            value={query}
-            onChangeText={setQuery}
-            placeholder="Rechercher une recette ou un ingrédient..."
-            placeholderTextColor="#8A918D"
-            style={styles.search}
-          />
-
-          <FlatList
-            data={filteredRecipes}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) =>
-              renderRecipe(item)
-            }
-            contentContainerStyle={
-              styles.listContent
-            }
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <Text style={styles.empty}>
-                Aucune recette trouvée.
-              </Text>
-            }
-          />
-        </View>
-      )}
-
-      {tab === 'favorites' && (
-        <View style={styles.listContainer}>
-          <Text style={styles.section}>
-            Mes favoris ❤️
-          </Text>
-
-          <FlatList
-            data={RECIPES.filter((recipe) =>
-              favorites.includes(recipe.id)
-            )}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) =>
-              renderRecipe(item)
-            }
-            contentContainerStyle={
-              styles.listContent
-            }
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <Text style={styles.empty}>
-                Aucune recette favorite pour le moment.
-              </Text>
-            }
-          />
-        </View>
-      )}
-
-      {tab === 'shopping' && (
-        <ScrollView
-          contentContainerStyle={styles.content}
-        >
-          <Text style={styles.section}>
-            Ma liste de courses 🛒
-          </Text>
-
-          {shopping.length === 0 ? (
-            <Text style={styles.empty}>
-              Ajoute des ingrédients depuis une recette.
-            </Text>
-          ) : (
-            <>
-              {shopping.map((item) => (
-                <Pressable
-                  key={item}
-                  style={styles.shopRow}
-                  onPress={() =>
-                    removeFromShoppingList(item)
-                  }
-                >
-                  <Text style={styles.shopText}>
-                    ☐ {item}
-                  </Text>
-
-                  <Text style={styles.remove}>
-                    Supprimer
-                  </Text>
-                </Pressable>
-              ))}
-
-              <Pressable
-                style={styles.clear}
-                onPress={clearShoppingList}
-              >
-                <Text style={styles.clearText}>
-                  Vider la liste
-                </Text>
-              </Pressable>
-            </>
-          )}
-        </ScrollView>
-      )}
-
-      <View style={styles.bottom}>
-        {[
-          ['home', '🏠', 'Accueil'],
-          ['recipes', '🍲', 'Recettes'],
-          ['favorites', '❤️', 'Favoris'],
-          ['shopping', '🛒', 'Courses'],
-        ].map(([key, icon, label]) => (
-          <Pressable
-            key={key}
-            style={styles.tab}
-            onPress={() => setTab(key)}
-          >
-            <Text style={styles.tabIcon}>
-              {icon}
-            </Text>
-
-            <Text
+          {REGIONS.map((item) => (
+            <Pressable
+              key={item}
+              onPress={() => setRegion(item)}
               style={[
-                styles.tabLabel,
-                tab === key &&
-                  styles.tabActive,
+                styles.filter,
+                region === item && styles.filterActive
               ]}
             >
-              {label}
-            </Text>
-          </Pressable>
-        ))}
+              <Text
+                style={[
+                  styles.filterText,
+                  region === item && styles.filterTextActive
+                ]}
+              >
+                {item}
+              </Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+
+        <Text style={styles.sectionTitle}>
+          Recettes
+          {filteredRecipes.length > 0
+            ? ` (${filteredRecipes.length})`
+            : ''}
+        </Text>
+
+        <FlatList
+          data={filteredRecipes}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.list}
+          ListEmptyComponent={
+            <View style={styles.empty}>
+              <Text style={styles.emptyTitle}>
+                Aucune recette trouvée
+              </Text>
+              <Text style={styles.emptyText}>
+                Essayez un autre nom, ingrédient ou région.
+              </Text>
+            </View>
+          }
+          renderItem={({ item }) => (
+            <Pressable
+              style={styles.card}
+              onPress={() => setSelected(item)}
+            >
+              <Image
+                source={{ uri: item.image }}
+                style={styles.cardImage}
+              />
+
+              <View style={styles.cardBody}>
+                <View style={styles.rowBetween}>
+                  <Text style={styles.cardTitle}>
+                    {item.name}
+                  </Text>
+
+                  <Text style={styles.region}>
+                    {item.region}
+                  </Text>
+                </View>
+
+                <Text style={styles.description}>
+                  {item.description}
+                </Text>
+
+                <Text style={styles.openText}>
+                  Voir la recette ›
+                </Text>
+              </View>
+            </Pressable>
+          )}
+        />
       </View>
 
       <Modal
-        visible={!!selected}
+        visible={Boolean(selected)}
         animationType="slide"
-        onRequestClose={() =>
-          setSelected(null)
-        }
+        onRequestClose={() => setSelected(null)}
       >
         {selected && (
-          <SafeAreaView style={styles.modal}>
-            <ScrollView
-              contentContainerStyle={
-                styles.detail
-              }
-              showsVerticalScrollIndicator={false}
-            >
+          <SafeAreaView style={styles.modalSafe}>
+            <ScrollView>
               <Image
-                source={{
-                  uri: selected.image,
-                }}
-                style={styles.detailImage}
+                source={{ uri: selected.image }}
+                style={styles.hero}
               />
 
-              <Pressable
-                style={styles.close}
-                onPress={() =>
-                  setSelected(null)
-                }
-                hitSlop={8}
-              >
-                <Text style={styles.closeText}>
-                  ×
+              <View style={styles.detail}>
+                <Pressable
+                  onPress={() => setSelected(null)}
+                  style={styles.close}
+                >
+                  <Text style={styles.closeText}>
+                    Fermer
+                  </Text>
+                </Pressable>
+
+                <Text style={styles.detailTitle}>
+                  {selected.name}
                 </Text>
-              </Pressable>
 
-              <Text style={styles.detailTitle}>
-                {selected.name}
-              </Text>
+                <Text style={styles.detailRegion}>
+                  {selected.region}
+                </Text>
 
-              <Text
-                style={[
-                  styles.muted,
-                  styles.detailMeta,
-                ]}
-              >
-                {selected.region} •{' '}
-                {selected.time} •{' '}
-                {selected.difficulty}
-              </Text>
+                <Text style={styles.detailDescription}>
+                  {selected.description}
+                </Text>
 
-              <View style={styles.actions}>
-                <Pressable
-                  style={styles.action}
-                  onPress={() =>
-                    speakRecipe(selected)
-                  }
-                >
-                  <Text style={styles.actionText}>
-                    🔊 Écouter
-                  </Text>
-                </Pressable>
+                <Text style={styles.detailHeading}>
+                  Ingrédients
+                </Text>
 
-                <Pressable
-                  style={styles.action}
-                  onPress={() =>
-                    shareRecipe(selected)
-                  }
-                >
-                  <Text style={styles.actionText}>
-                    📤 Partager
-                  </Text>
-                </Pressable>
-              </View>
-
-              <Text style={styles.heading}>
-                🥘 Ingrédients
-              </Text>
-
-              {selected.ingredients.map(
-                (ingredient) => (
-                  <Pressable
-                    key={ingredient}
-                    style={styles.ingredient}
-                    onPress={() =>
-                      addToShoppingList(
-                        ingredient
-                      )
-                    }
-                  >
+                {selected.ingredients.map(
+                  (ingredient, index) => (
                     <Text
-                      style={
-                        styles.ingredientText
-                      }
+                      key={`${selected.id}-i-${index}`}
+                      style={styles.bullet}
                     >
-                      ＋ {ingredient}
+                      • {ingredient}
                     </Text>
+                  )
+                )}
 
-                    <Text
-                      style={styles.addText}
-                    >
-                      Courses
-                    </Text>
-                  </Pressable>
-                )
-              )}
+                <Text style={styles.detailHeading}>
+                  Préparation
+                </Text>
 
-              <Text style={styles.heading}>
-                👨🏾‍🍳 Préparation
-              </Text>
-
-              {selected.steps.map(
-                (step, index) => (
+                {selected.steps.map((step, index) => (
                   <View
-                    key={`${selected.id}-${index}`}
+                    key={`${selected.id}-s-${index}`}
                     style={styles.step}
                   >
-                    <View style={styles.num}>
-                      <Text
-                        style={styles.numText}
-                      >
+                    <View style={styles.number}>
+                      <Text style={styles.numberText}>
                         {index + 1}
                       </Text>
                     </View>
 
-                    <Text
-                      style={styles.stepText}
-                    >
+                    <Text style={styles.stepText}>
                       {step}
                     </Text>
                   </View>
-                )
-              )}
-
-              <Pressable
-                style={styles.favButton}
-                onPress={() =>
-                  toggleFavorite(selected.id)
-                }
-              >
-                <Text
-                  style={styles.favButtonText}
-                >
-                  {favorites.includes(
-                    selected.id
-                  )
-                    ? '♥ Retirer des favoris'
-                    : '♡ Ajouter aux favoris'}
-                </Text>
-              </Pressable>
+                ))}
+              </View>
             </ScrollView>
           </SafeAreaView>
         )}
@@ -854,372 +414,247 @@ export default function App() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#F7F8F5',
+    backgroundColor: '#F7F4EE'
   },
 
   header: {
-    paddingHorizontal: 18,
-    paddingTop: 14,
-    paddingBottom: 8,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#0B6B3A',
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 20
   },
 
   logo: {
-    fontSize: 28,
-    fontWeight: '900',
-    letterSpacing: 1,
-    color: '#111111',
+    color: '#FFFFFF',
+    fontSize: 30,
+    fontWeight: '800'
   },
 
-  green: {
-    color: '#0B6B3A',
-  },
-
-  tagline: {
-    color: '#68706B',
-    marginTop: 2,
-    fontSize: 12,
+  subtitle: {
+    color: '#E8F5ED',
+    marginTop: 4,
+    fontSize: 14
   },
 
   content: {
-    padding: 16,
-    paddingBottom: 110,
-  },
-
-  hero: {
-    backgroundColor: '#0B6B3A',
-    borderRadius: 18,
-    padding: 20,
-    marginBottom: 18,
-  },
-
-  heroTitle: {
-    color: '#FFFFFF',
-    fontSize: 23,
-    fontWeight: '800',
-    marginBottom: 8,
-  },
-
-  heroText: {
-    color: '#EAF7EF',
-    lineHeight: 21,
-  },
-
-  section: {
-    fontSize: 19,
-    fontWeight: '800',
-    marginTop: 14,
-    marginBottom: 10,
-    color: '#171A18',
+    flex: 1,
+    paddingHorizontal: 16
   },
 
   search: {
     backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E1DDD4',
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 13,
-    borderWidth: 1,
-    borderColor: '#E0E4E1',
+    marginTop: 14,
     fontSize: 15,
-    color: '#171A18',
+    color: '#222'
   },
 
-  chips: {
-    gap: 8,
-    paddingBottom: 4,
+  sectionTitle: {
+    fontSize: 19,
+    fontWeight: '800',
+    color: '#202020',
+    marginTop: 16,
+    marginBottom: 9
   },
 
-  chip: {
+  filters: {
+    paddingRight: 10
+  },
+
+  filter: {
     paddingHorizontal: 14,
     paddingVertical: 9,
-    borderRadius: 30,
+    borderRadius: 20,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#D9DEDA',
+    borderColor: '#DDD8CE',
+    marginRight: 8
   },
 
-  chipActive: {
+  filterActive: {
     backgroundColor: '#0B6B3A',
-    borderColor: '#0B6B3A',
+    borderColor: '#0B6B3A'
   },
 
-  chipText: {
-    color: '#3D4741',
-    fontWeight: '600',
+  filterText: {
+    color: '#444',
+    fontWeight: '600'
   },
 
-  chipTextActive: {
-    color: '#FFFFFF',
+  filterTextActive: {
+    color: '#FFFFFF'
+  },
+
+  list: {
+    paddingBottom: 24
   },
 
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    marginBottom: 14,
+    borderRadius: 16,
     overflow: 'hidden',
+    marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#E7EAE8',
+    borderColor: '#E4E0D8'
   },
 
   cardImage: {
     width: '100%',
-    height: 180,
+    height: 190,
+    backgroundColor: '#DDD'
   },
 
   cardBody: {
-    padding: 13,
+    padding: 14
+  },
+
+  rowBetween: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between'
   },
 
   cardTitle: {
-    fontSize: 19,
-    fontWeight: '800',
     flex: 1,
-    marginRight: 8,
-    color: '#171A18',
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#202020'
   },
 
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  region: {
+    color: '#0B6B3A',
+    fontWeight: '700',
+    fontSize: 12,
+    marginLeft: 8
   },
 
-  heartButton: {
-    padding: 2,
+  description: {
+    color: '#666',
+    marginTop: 7,
+    lineHeight: 20
   },
 
-  heart: {
-    fontSize: 27,
-    color: '#D33B49',
-  },
-
-  muted: {
-    color: '#69716D',
-    marginTop: 4,
+  openText: {
+    color: '#0B6B3A',
+    fontWeight: '800',
+    marginTop: 10
   },
 
   empty: {
-    color: '#737A76',
-    textAlign: 'center',
-    marginTop: 40,
-    lineHeight: 22,
-    paddingHorizontal: 20,
-  },
-
-  listContainer: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 4,
-    paddingBottom: 90,
-  },
-
-  listContent: {
-    paddingTop: 14,
-    paddingBottom: 100,
-  },
-
-  bottom: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 78,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E2E6E3',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingTop: 7,
-  },
-
-  tab: {
     alignItems: 'center',
-    minWidth: 65,
+    paddingVertical: 50
   },
 
-  tabIcon: {
-    fontSize: 22,
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '800'
   },
 
-  tabLabel: {
-    fontSize: 11,
-    color: '#6E756F',
-    marginTop: 2,
+  emptyText: {
+    color: '#666',
+    marginTop: 6
   },
 
-  tabActive: {
-    color: '#0B6B3A',
-    fontWeight: '800',
-  },
-
-  modal: {
+  modalSafe: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F7F4EE'
+  },
+
+  hero: {
+    width: '100%',
+    height: 260,
+    backgroundColor: '#DDD'
   },
 
   detail: {
-    paddingBottom: 40,
-  },
-
-  detailImage: {
-    width: '100%',
-    height: 260,
+    padding: 18,
+    paddingBottom: 40
   },
 
   close: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: 'rgba(0,0,0,0.55)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    backgroundColor: '#E8E4DB',
+    paddingHorizontal: 13,
+    paddingVertical: 8,
+    borderRadius: 18,
+    marginBottom: 10
   },
 
   closeText: {
-    color: '#FFFFFF',
-    fontSize: 30,
-    lineHeight: 34,
+    color: '#333',
+    fontWeight: '700'
   },
 
   detailTitle: {
     fontSize: 30,
     fontWeight: '900',
-    marginTop: 18,
-    paddingHorizontal: 18,
-    color: '#171A18',
+    color: '#202020'
   },
 
-  detailMeta: {
-    paddingHorizontal: 18,
-  },
-
-  actions: {
-    flexDirection: 'row',
-    gap: 10,
-    padding: 18,
-  },
-
-  action: {
-    flex: 1,
-    backgroundColor: '#EAF5EE',
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-
-  actionText: {
+  detailRegion: {
     color: '#0B6B3A',
     fontWeight: '800',
+    marginTop: 4
   },
 
-  heading: {
+  detailDescription: {
+    color: '#555',
+    lineHeight: 21,
+    marginTop: 10
+  },
+
+  detailHeading: {
     fontSize: 21,
     fontWeight: '900',
-    marginTop: 8,
+    marginTop: 24,
     marginBottom: 10,
-    paddingHorizontal: 18,
-    color: '#171A18',
+    color: '#202020'
   },
 
-  ingredient: {
-    marginHorizontal: 18,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEF0EE',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-
-  ingredientText: {
-    flex: 1,
-    color: '#252B27',
-  },
-
-  addText: {
-    color: '#0B6B3A',
-    fontWeight: '700',
-    fontSize: 12,
-    marginLeft: 8,
+  bullet: {
+    fontSize: 15,
+    lineHeight: 23,
+    color: '#333',
+    marginBottom: 6
   },
 
   step: {
     flexDirection: 'row',
-    paddingHorizontal: 18,
-    marginBottom: 14,
-    gap: 10,
+    alignItems: 'flex-start',
+    marginBottom: 13
   },
 
-  num: {
+  number: {
     width: 30,
     height: 30,
     borderRadius: 15,
     backgroundColor: '#0B6B3A',
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 10
   },
 
-  numText: {
+  numberText: {
     color: '#FFFFFF',
-    fontWeight: '800',
+    fontWeight: '800'
   },
 
   stepText: {
     flex: 1,
-    lineHeight: 21,
-    color: '#252B27',
-  },
-
-  favButton: {
-    margin: 18,
-    backgroundColor: '#0B6B3A',
-    padding: 15,
-    borderRadius: 14,
-    alignItems: 'center',
-  },
-
-  favButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '800',
-    fontSize: 16,
-  },
-
-  shopRow: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 9,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: '#E5E9E6',
-  },
-
-  shopText: {
-    flex: 1,
-    fontSize: 16,
-    color: '#252B27',
-  },
-
-  remove: {
-    color: '#C33',
-    fontSize: 12,
-    fontWeight: '700',
-    marginLeft: 10,
-  },
-
-  clear: {
-    marginTop: 15,
-    padding: 13,
-    borderRadius: 12,
-    backgroundColor: '#FDECEC',
-    alignItems: 'center',
-  },
-
-  clearText: {
-    color: '#B42B2B',
-    fontWeight: '800',
-  },
+    fontSize: 15,
+    lineHeight: 22,
+    color: '#333',
+    paddingTop: 3
+  }
 });
+          
+          
+                          
+                                    
+      
+
+  
