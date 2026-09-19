@@ -29,26 +29,50 @@ const images = [
 const dir = path.join(process.cwd(), 'assets', 'recipes');
 fs.mkdirSync(dir, { recursive: true });
 
-function download(url, destination) {
+function download(url, destination, attempt = 0) {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(destination);
 
     https.get(url, {
-  headers: {
-    'User-Agent': 'CamFood/1.0 (Cameroon recipe app)'
-  }
-}, response => {
+      headers: {
+        'User-Agent': 'CamFood/1.0 (Cameroon recipe app)'
+      }
+    }, response => {
+
+      if (response.statusCode === 429) {
+        file.close();
+        if (fs.existsSync(destination)) fs.unlinkSync(destination);
+        response.resume();
+
+        if (attempt >= 3) {
+          return reject(new Error(`HTTP 429 après plusieurs tentatives: ${url}`));
+        }
+
+        const retryAfter = Number(response.headers['retry-after']) || 15;
+
+        console.log(`Wikimedia limite les requêtes. Nouvelle tentative dans ${retryAfter}s...`);
+
+        setTimeout(() => {
+          download(url, destination, attempt + 1)
+            .then(resolve)
+            .catch(reject);
+        }, retryAfter * 1000);
+
+        return;
+      }
+
       if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
         file.close();
         fs.unlinkSync(destination);
-        return download(response.headers.location, destination)
+
+        return download(response.headers.location, destination, attempt)
           .then(resolve)
           .catch(reject);
       }
 
       if (response.statusCode !== 200) {
         file.close();
-        fs.unlinkSync(destination);
+        if (fs.existsSync(destination)) fs.unlinkSync(destination);
         return reject(new Error(`HTTP ${response.statusCode}: ${url}`));
       }
 
@@ -57,6 +81,7 @@ function download(url, destination) {
       file.on('finish', () => {
         file.close(resolve);
       });
+
     }).on('error', error => {
       file.close();
       if (fs.existsSync(destination)) fs.unlinkSync(destination);
@@ -64,7 +89,6 @@ function download(url, destination) {
     });
   });
 }
-
 (async () => {
   for (const [name, url] of images) {
     const destination = path.join(dir, name);
