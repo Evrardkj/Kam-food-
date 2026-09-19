@@ -33,7 +33,11 @@ function download(url, destination) {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(destination);
 
-    https.get(url, response => {
+    https.get(url, {
+  headers: {
+    'User-Agent': 'CamFood/1.0 (Cameroon recipe app)'
+  }
+}, response => {
       if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
         file.close();
         fs.unlinkSync(destination);
