@@ -613,7 +613,7 @@ export default function App() {
 
     <View style={styles.page}>
       <ImageBackground
-        source={{ uri: RECIPES[0]?.image}}
+        source={RECIPES[0]?.image}
         style={styles.header}
         imageStyle={styles.headerImage}
       >
@@ -701,7 +701,7 @@ export default function App() {
               onPress={() => setSelected(item)}
             >
               <Image
-                source={{ uri: item.image }}
+                source={item.image}
                 style={styles.cardImage}
               />
 
@@ -741,7 +741,7 @@ export default function App() {
           <SafeAreaView style={styles.modalSafe}>
             <ScrollView showsVerticalScrollIndicator={false}>
               <Image
-                source={{ uri: selected.image }}
+                source={selected.image}
                 style={styles.hero}
               />
 
