@@ -545,7 +545,33 @@ Modal,
     ]
   }
 ];
-  
+const RECIPE_IMAGES = [
+  'https://upload.wikimedia.org/wikipedia/commons/e/e9/Ndol%C3%A9_camerounais.JPG',
+  'https://upload.wikimedia.org/wikipedia/commons/9/91/Ndol%C3%A8_%C3%A0_la_viande%2C_morue_et_crevettes.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/3/30/Poulet_DG.JPG',
+  'https://upload.wikimedia.org/wikipedia/commons/e/ef/Le_Eru%2C_un_plat_camerounais.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/e/e2/Garri_and_Eru.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/b/b3/Water_fufu_and_Eru.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/9/9f/Achu_meal.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/1/1d/Taro_sauce_jaune_avec_peau_de_boeuf.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/7/7e/Koki_Beans.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/d/d8/Koki_and_ripe_plantains.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/e/ed/Kwacoco_bible.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/e/ec/Kati_kati_cameroun.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/3/35/Fufu_corn_and_khati_khati.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/f/f8/Poisson_brais%C3%A9_et_fleur_de_citron..JPG',
+  'https://upload.wikimedia.org/wikipedia/commons/7/7c/Sanga%2C_Plat_camerounais.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/1/1b/Mbongo_Tchobi_%28sauce_noir%29.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/1/1c/Ndomba_de_poulet.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/8/89/Ndomba_de_porc_et_frites_de_plantain_m%C3%BBr.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/5/54/Suya.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/6/69/Le_mets_de_pistache_%28Nnam_ngon%29.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/a/a7/Mintumba.jpg'
+];
+
+RECIPES.forEach((recipe, index) => {
+  recipe.image = RECIPE_IMAGES[index];
+});  
 
 
 const REGIONS = [
