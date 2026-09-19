@@ -150,12 +150,14 @@ function download(url, destination, attempt = 0) {
   });
 }
 
-async function getImageUrl(title) {
+async function getImageUrls() {
+  const titles = images.map(([, title]) => title).join('|');
+
   const params = new URLSearchParams({
     action: 'query',
     format: 'json',
     prop: 'imageinfo',
-    titles: title,
+    titles,
     iiprop: 'url',
     iiurlwidth: '960'
   });
@@ -166,30 +168,34 @@ async function getImageUrl(title) {
   const data = await requestJson(apiUrl);
 
   const pages = data?.query?.pages || {};
+  const result = {};
 
   for (const page of Object.values(pages)) {
     if (page.imageinfo && page.imageinfo[0]) {
       const sourceUrl =
-  page.imageinfo[0].thumburl ||
-  page.imageinfo[0].url;
+        page.imageinfo[0].thumburl ||
+        page.imageinfo[0].url;
 
-return `https://wsrv.nl/?url=${encodeURIComponent(sourceUrl)}&w=960&q=85&output=jpg`;
-      
+      result[page.title] =
+        `https://wsrv.nl/?url=${encodeURIComponent(sourceUrl)}&w=960&q=85&output=jpg`;
     }
   }
 
-  throw new Error(`Image introuvable: ${title}`);
+  return result;
 }
-
 (async () => {
+  const imageUrls = await getImageUrls();
+
   for (const [name, title] of images) {
     const destination = path.join(dir, name);
 
-    console.log(`Recherche Wikimedia: ${title}`);
-
-    const imageUrl = await getImageUrl(title);
-
     console.log(`Téléchargement: ${name}`);
+
+    const imageUrl = imageUrls[title];
+
+    if (!imageUrl) {
+      throw new Error(`Image introuvable: ${title}`);
+    }
 
     await download(imageUrl, destination);
 
@@ -199,5 +205,3 @@ return `https://wsrv.nl/?url=${encodeURIComponent(sourceUrl)}&w=960&q=85&output=
   console.log('');
   console.log('21 images téléchargées avec succès');
 })();
-
-      
