@@ -542,9 +542,13 @@ Modal,
       'Mélanger soigneusement.',
       'Envelopper dans les feuilles.',
       "Cuire à la vapeur jusqu'à obtenir une texture ferme."
-    ];
+          ],
+    }
+  ];
 
 const RECIPE_IMAGES = [
+
+
   require('./assets/recipes/ndole.jpg'),
   require('./assets/recipes/ndole_crevettes.jpg'),
   require('./assets/recipes/poulet_dg.jpg'),
