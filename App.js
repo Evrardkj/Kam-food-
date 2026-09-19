@@ -1,1145 +1,1577 @@
-
-      
-      import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  FlatList,
-Image,
-ImageBackground,
-Modal,
-  
-
-  Pressable,
   SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
   View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  TextInput,
+  Pressable,
+  Modal,
+  Image,
+  StatusBar,
+  Alert,
 } from 'react-native';
 
-      const RECIPES = [
+const COLORS = {
+  primary: '#E85D04',
+  primaryDark: '#C94D00',
+  cream: '#FFF8F0',
+  white: '#FFFFFF',
+  dark: '#202020',
+  gray: '#777777',
+  light: '#F2F2F2',
+  green: '#2D8A4E',
+  red: '#D62828',
+  yellow: '#F4A261',
+};
+
+const RECIPES = [
   {
     id: '1',
     name: 'Ndolé',
     region: 'Littoral',
-    description: 'Le célèbre plat camerounais préparé avec les feuilles de ndolé, arachides et viande ou poisson.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Ndolé%20camerounais.JPG',
+    category: 'Plats',
+    time: '60 min',
+    rating: '4.9',
+    emoji: '🥬',
+    image:
+      'https://images.unsplash.com/photo-1547592180-85f173990554?w=900',
+    description:
+      'Un grand classique camerounais préparé avec des feuilles de ndolé, des arachides et de la viande ou des crevettes.',
     ingredients: [
-      '500 g de feuilles de ndolé',
-      '300 g de viande de bœuf',
-      '200 g de crevettes',
-      '200 g d’arachides',
-      '1 oignon',
-      '2 gousses d’ail',
-      '100 ml d’huile de palme',
-      'Sel et poivre'
+      'Feuilles de ndolé',
+      'Arachides',
+      'Viande de bœuf',
+      'Crevettes',
+      'Oignon',
+      'Ail',
+      'Huile de cuisson',
+      'Sel',
     ],
-    steps: [
-      'Laver et faire bouillir les feuilles de ndolé pour réduire leur amertume.',
-      'Cuire la viande jusqu’à ce qu’elle soit tendre.',
-      'Écraser les arachides avec l’ail et l’oignon.',
-      'Faire revenir la préparation dans l’huile.',
-      'Ajouter le ndolé, la viande et les crevettes.',
-      'Laisser mijoter puis servir chaud.'
-    ]
+    preparation: [
+      'Nettoyer et préparer les feuilles de ndolé.',
+      'Faire cuire la viande et les crevettes.',
+      'Préparer la pâte d’arachides.',
+      'Faire revenir oignon et ail.',
+      'Ajouter les feuilles et les arachides.',
+      'Laisser mijoter puis servir chaud.',
+    ],
   },
-
   {
     id: '2',
-    name: 'Ndolé aux crevettes',
+    name: 'Poulet DG',
     region: 'Littoral',
-    description: 'Une variante du ndolé avec crevettes et poisson, servie avec plantain, miondo ou riz.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Ndolè%20à%20la%20viande,%20morue%20et%20crevettes.jpg',
+    category: 'Plats',
+    time: '55 min',
+    rating: '4.8',
+    emoji: '🍗',
+    image:
+      'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=900',
+    description:
+      'Poulet mijoté avec bananes plantains, légumes et épices.',
     ingredients: [
-      '500 g de ndolé',
-      '300 g de crevettes',
-      '200 g de morue',
-      '150 g d’arachides',
-      '1 oignon',
-      '2 gousses d’ail',
-      'Huile de palme',
-      'Sel'
+      'Poulet',
+      'Bananes plantains mûres',
+      'Carottes',
+      'Haricots verts',
+      'Poivron',
+      'Tomates',
+      'Oignon',
+      'Épices',
     ],
-    steps: [
-      'Préparer et dessaler la morue.',
-      'Faire bouillir puis égoutter les feuilles de ndolé.',
-      'Préparer la pâte d’arachides.',
-      'Faire revenir oignon et ail dans l’huile.',
-      'Ajouter les arachides, le ndolé, la morue et les crevettes.',
-      'Laisser mijoter quelques minutes avant de servir.'
-    ]
+    preparation: [
+      'Découper et assaisonner le poulet.',
+      'Faire dorer le poulet.',
+      'Frire les bananes plantains.',
+      'Faire revenir les légumes.',
+      'Ajouter le poulet et les plantains.',
+      'Mijoter quelques minutes et servir.',
+    ],
   },
-
   {
     id: '3',
-    name: 'Poulet DG',
-    region: 'Centre',
-    description: 'Poulet frit accompagné de plantains mûrs et de légumes, une spécialité camerounaise très connue.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Poulet%20DG.JPG',
-    ingredients: [
-      '1 poulet découpé',
-      '4 plantains mûrs',
-      '2 carottes',
-      '1 poivron',
-      '150 g de haricots verts',
-      '2 tomates',
-      '1 oignon',
-      '3 gousses d’ail',
-      'Huile',
-      'Sel et poivre'
-    ],
-    steps: [
-      'Assaisonner puis faire frire les morceaux de poulet.',
-      'Découper les plantains et les faire frire.',
-      'Faire revenir oignon, ail, tomates et légumes.',
-      'Ajouter le poulet et laisser mijoter.',
-      'Ajouter les plantains à la fin.',
-      'Servir chaud.'
-    ]
-  },
-
-  {
-    id: '4',
     name: 'Eru',
     region: 'Sud-Ouest',
-    description: 'Plat traditionnel du Sud-Ouest préparé avec feuilles d’eru, waterleaf et viande ou poisson fumé.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Le%20Eru,%20un%20plat%20camerounais.jpg',
+    category: 'Plats',
+    time: '70 min',
+    rating: '4.9',
+    emoji: '🌿',
+    image:
+      'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=900',
+    description:
+      'Plat traditionnel à base de feuilles d’eru et de waterleaf, accompagné de viande et de poisson fumé.',
     ingredients: [
-      '500 g de feuilles d’eru',
-      '300 g de waterleaf',
-      '300 g de viande',
-      '200 g de poisson fumé',
-      '100 ml d’huile de palme',
-      '1 oignon',
-      'Piment selon le goût',
-      'Sel'
+      'Eru',
+      'Waterleaf',
+      'Viande',
+      'Poisson fumé',
+      'Crabes',
+      'Huile rouge',
+      'Sel',
+      'Piment',
     ],
-    steps: [
-      'Laver et découper les feuilles.',
-      'Cuire la viande jusqu’à ce qu’elle soit tendre.',
-      'Ajouter le poisson fumé.',
-      'Ajouter le waterleaf puis l’eru.',
-      'Verser l’huile de palme.',
-      'Laisser mijoter jusqu’à obtenir une sauce bien liée.'
-    ]
+    preparation: [
+      'Nettoyer les feuilles.',
+      'Cuire la viande et le poisson fumé.',
+      'Ajouter le waterleaf.',
+      'Ajouter progressivement l’eru.',
+      'Verser l’huile rouge.',
+      'Laisser mijoter et servir avec du garri.',
+    ],
   },
-
+  {
+    id: '4',
+    name: 'Koki',
+    region: 'Ouest',
+    category: 'Plats',
+    time: '90 min',
+    rating: '4.7',
+    emoji: '🫘',
+    image:
+      'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=900',
+    description:
+      'Gâteau de haricots traditionnel camerounais, parfumé et cuit à la vapeur.',
+    ingredients: [
+      'Haricots blancs',
+      'Huile rouge',
+      'Piment',
+      'Oignon',
+      'Sel',
+      'Feuilles de bananier',
+    ],
+    preparation: [
+      'Tremper les haricots.',
+      'Retirer les peaux.',
+      'Écraser les haricots.',
+      'Ajouter huile, sel et épices.',
+      'Envelopper dans les feuilles.',
+      'Cuire à la vapeur jusqu’à complète cuisson.',
+    ],
+  },
   {
     id: '5',
-    name: 'Garri et Eru',
-    region: 'Sud-Ouest',
-    description: 'Eru traditionnel accompagné de garri, une association très appréciée dans le Sud-Ouest.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Garri%20and%20Eru.jpg',
+    name: 'Achu',
+    region: 'Nord-Ouest',
+    category: 'Plats',
+    time: '75 min',
+    rating: '4.8',
+    emoji: '🥔',
+    image:
+      'https://images.unsplash.com/photo-1518013431117-eb1465fa5752?w=900',
+    description:
+      'Plat traditionnel servi avec une sauce jaune riche et parfumée.',
     ingredients: [
-      '500 g d’eru',
-      '300 g de waterleaf',
-      '250 g de viande',
-      '150 g de poisson fumé',
-      '100 ml d’huile de palme',
-      '300 g de garri',
-      'Sel'
+      'Macabo',
+      'Huile rouge',
+      'Épices',
+      'Viande',
+      'Poisson fumé',
+      'Sel',
+      'Piment',
     ],
-    steps: [
-      'Préparer l’eru avec la viande et le poisson fumé.',
-      'Ajouter progressivement les feuilles.',
-      'Ajouter l’huile de palme.',
-      'Laisser mijoter jusqu’à obtenir la texture souhaitée.',
-      'Préparer le garri dans un bol.',
-      'Servir l’eru chaud avec le garri.'
-    ]
+    preparation: [
+      'Éplucher et cuire le macabo.',
+      'Piler jusqu’à obtenir une pâte.',
+      'Préparer la sauce jaune.',
+      'Cuire la viande et le poisson.',
+      'Assembler et servir chaud.',
+    ],
   },
-
   {
     id: '6',
-    name: 'Water fufu et Eru',
-    region: 'Sud-Ouest',
-    description: 'Water fufu accompagné de la sauce eru traditionnelle.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Water%20fufu%20and%20Eru.jpg',
+    name: 'Poisson braisé',
+    region: 'Centre',
+    category: 'Grillades',
+    time: '40 min',
+    rating: '4.9',
+    emoji: '🐟',
+    image:
+      'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=900',
+    description:
+      'Poisson mariné aux épices puis braisé au feu pour un goût fumé.',
     ingredients: [
-      '500 g de manioc fermenté',
-      '500 g de feuilles d’eru',
-      '300 g de waterleaf',
-      '250 g de viande',
-      '150 g de poisson fumé',
-      'Huile de palme',
-      'Sel'
+      'Poisson entier',
+      'Ail',
+      'Gingembre',
+      'Oignon',
+      'Poivre',
+      'Piment',
+      'Citron',
+      'Sel',
     ],
-    steps: [
-      'Préparer la pâte de manioc fermenté.',
-      'Cuire la pâte avec de l’eau en remuant continuellement.',
-      'Former une pâte lisse et élastique.',
-      'Préparer l’eru avec viande, poisson et légumes.',
-      'Ajouter l’huile de palme.',
-      'Servir le water fufu avec l’eru.'
-    ]
+    preparation: [
+      'Nettoyer le poisson.',
+      'Préparer la marinade.',
+      'Mariner le poisson.',
+      'Faire braiser sur le grill.',
+      'Retourner régulièrement.',
+      'Servir avec plantain ou miondo.',
+    ],
   },
-
   {
     id: '7',
-    name: 'Achu et sauce jaune',
-    region: 'Ouest',
-    description: 'Taro pilé accompagné de la traditionnelle sauce jaune.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Achu%20meal.jpg',
-    ingredients: [
-      '1 kg de taro',
-      '300 g de viande',
-      '100 g de peau de bœuf',
-      '100 g d’huile de palme',
-      'Épices jaunes',
-      'Piment',
-      'Sel'
-    ],
-    steps: [
-      'Cuire le taro jusqu’à ce qu’il soit très tendre.',
-      'Éplucher puis piler le taro chaud.',
-      'Préparer le bouillon avec la viande et la peau de bœuf.',
-      'Ajouter les épices et l’huile de palme.',
-      'Ajuster le sel et le piment.',
-      'Servir la pâte de taro avec la sauce jaune.'
-    ]
-  },
-
-  {
-    id: '8',
-    name: 'Taro sauce jaune',
-    region: 'Ouest',
-    description: 'Taro accompagné d’une sauce jaune traditionnelle avec viande et peau de bœuf.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Taro%20sauce%20jaune%20avec%20peau%20de%20boeuf.jpg',
-    ingredients: [
-      '1 kg de taro',
-      '300 g de viande de bœuf',
-      '150 g de peau de bœuf',
-      'Huile de palme',
-      'Épices jaunes',
-      'Piment',
-      'Sel'
-    ],
-    steps: [
-      'Cuire le taro jusqu’à ce qu’il soit tendre.',
-      'Piler le taro pour obtenir une pâte homogène.',
-      'Cuire la viande et la peau de bœuf.',
-      'Préparer la sauce avec les épices jaunes.',
-      'Ajouter l’huile de palme.',
-      'Servir avec le taro pilé.'
-    ]
-  },
-
-  {
-    id: '9',
-    name: 'Koki',
-    region: 'Littoral',
-    description: 'Gâteau de haricots traditionnel cuit dans des feuilles de bananier.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Koki%20Beans.jpg',
-    ingredients: [
-      '500 g de niébé',
-      '150 ml d’huile de palme',
-      '1 oignon',
-      'Piment',
-      'Sel',
-      'Feuilles de bananier'
-    ],
-    steps: [
-      'Tremper les haricots puis retirer leur peau.',
-      'Écraser les haricots jusqu’à obtenir une pâte.',
-      'Ajouter l’huile de palme, le sel et le piment.',
-      'Mélanger soigneusement.',
-      'Envelopper dans les feuilles de bananier.',
-      'Cuire à la vapeur pendant environ une heure.'
-    ]
-  },
-
-  {
-    id: '10',
-    name: 'Koki et plantain mûr',
-    region: 'Littoral',
-    description: 'Koki de haricots servi avec des plantains mûrs.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Koki%20and%20ripe%20plantains.jpg',
-    ingredients: [
-      '500 g de koki',
-      '4 plantains mûrs',
-      'Huile de palme',
-      'Sel'
-    ],
-    steps: [
-      'Préparer le koki et le cuire dans les feuilles.',
-      'Éplucher les plantains.',
-      'Faire bouillir ou frire les plantains selon le goût.',
-      'Découper le koki en portions.',
-      'Servir chaud avec les plantains.'
-    ]
-  },
-
-  {
-    id: '11',
-    name: 'Kwacoco Bible',
-    region: 'Sud-Ouest',
-    description: 'Plat traditionnel à base de macabo, souvent préparé avec huile de palme et épices.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Kwacoco%20bible.jpg',
-    ingredients: [
-      '1 kg de macabo',
-      '150 ml d’huile de palme',
-      '200 g de poisson fumé',
-      '1 oignon',
-      'Piment',
-      'Sel',
-      'Feuilles de bananier'
-    ],
-    steps: [
-      'Éplucher et râper le macabo.',
-      'Ajouter le poisson fumé émietté.',
-      'Ajouter l’huile de palme, l’oignon et les épices.',
-      'Mélanger soigneusement.',
-      'Envelopper dans des feuilles.',
-      'Cuire à la vapeur jusqu’à obtenir une texture ferme.'
-    ]
-  },
-
-  {
-    id: '12',
-    name: 'Kati Kati',
-    region: 'Nord-Ouest',
-    description: 'Poulet traditionnel grillé accompagné de couscous de maïs.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/PLAT%20DE%20KATI%20KATI.jpg',
-    ingredients: [
-      '1 poulet',
-      '500 g de maïs pour couscous',
-      '2 tomates',
-      '1 oignon',
-      'Piment',
-      'Sel',
-      'Épices'
-    ],
-    steps: [
-      'Nettoyer et assaisonner le poulet.',
-      'Faire griller le poulet progressivement.',
-      'Préparer le couscous de maïs.',
-      'Préparer une petite sauce tomate épicée.',
-      'Découper le poulet.',
-      'Servir avec le couscous de maïs.'
-    ]
-  },
-
-  {
-    id: '13',
-    name: 'Fufu de maïs et Kati Kati',
-    region: 'Nord-Ouest',
-    description: 'Fufu de maïs accompagné de poulet Kati Kati.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Fufu%20corn%20and%20khati%20khati.jpg',
-    ingredients: [
-      '500 g de farine de maïs',
-      '1 poulet',
-      '2 tomates',
-      '1 oignon',
-      'Piment',
-      'Sel'
-    ],
-    steps: [
-      'Préparer le poulet avec les épices.',
-      'Griller le poulet jusqu’à obtenir une peau dorée.',
-      'Faire bouillir de l’eau.',
-      'Ajouter progressivement la farine de maïs.',
-      'Remuer jusqu’à obtenir une pâte ferme.',
-      'Servir le fufu avec le poulet.'
-    ]
-  },
-
-  {
-    id: '14',
-    name: 'Poisson braisé',
-    region: 'Littoral',
-    description: 'Poisson assaisonné puis grillé au feu, servi avec une sauce pimentée et des accompagnements.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Poisson%20braisé%20et%20fleur%20de%20citron..JPG',
-    ingredients: [
-      '1 gros poisson',
-      '2 gousses d’ail',
-      '1 oignon',
-      '1 citron',
-      'Piment',
-      'Persil',
-      'Huile',
-      'Sel'
-    ],
-    steps: [
-      'Nettoyer et inciser le poisson.',
-      'Préparer une marinade avec ail, oignon, citron et épices.',
-      'Badigeonner le poisson.',
-      'Laisser mariner.',
-      'Griller le poisson des deux côtés.',
-      'Servir avec plantain, miondo ou bâton de manioc.'
-    ]
-  },
-
-  {
-    id: '15',
-    name: 'Sanga',
-    region: 'Centre',
-    description: 'Plat traditionnel camerounais à base de maïs et de légumes, particulièrement associé aux traditions Beti.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Sanga%2C%20Plat%20camerounais.jpg',
-    ingredients: [
-      '500 g de maïs frais',
-      '500 g de feuilles de légumes',
-      '200 ml d’huile de palme',
-      '1 oignon',
-      'Piment',
-      'Sel'
-    ],
-    steps: [
-      'Égrener le maïs.',
-      'Laver et découper les feuilles.',
-      'Faire revenir l’oignon dans l’huile de palme.',
-      'Ajouter le maïs.',
-      'Ajouter progressivement les feuilles.',
-      'Cuire jusqu’à obtenir une préparation bien fondante.'
-    ]
-  },
-
-  {
-    id: '16',
     name: 'Mbongo Tchobi',
     region: 'Littoral',
-    description: 'Sauce noire traditionnelle aux épices brûlées, souvent préparée avec du poisson ou de la viande.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Mbongo%20Tchobi%20%28sauce%20noir%29.jpg',
+    category: 'Plats',
+    time: '65 min',
+    rating: '4.8',
+    emoji: '🍲',
+    image:
+      'https://images.unsplash.com/photo-1547592180-85f173990554?w=900',
+    description:
+      'Poisson mijoté dans une sauce noire très parfumée aux épices traditionnelles.',
     ingredients: [
-      '1 kg de poisson ou viande',
-      '100 g d’épices mbongo',
-      '2 tomates',
-      '1 oignon',
-      '2 gousses d’ail',
+      'Poisson',
+      'Épices mbongo',
+      'Tomates',
+      'Oignon',
+      'Ail',
       'Huile',
-      'Piment',
-      'Sel'
+      'Sel',
     ],
-    steps: [
-      'Nettoyer et assaisonner le poisson ou la viande.',
-      'Faire griller légèrement les épices.',
-      'Écraser les épices avec tomate, oignon et ail.',
-      'Faire revenir la préparation dans l’huile.',
-      'Ajouter le poisson ou la viande.',
-      'Laisser mijoter jusqu’à obtenir une sauce noire parfumée.'
-    ]
+    preparation: [
+      'Nettoyer et assaisonner le poisson.',
+      'Préparer les épices.',
+      'Faire revenir oignon et ail.',
+      'Ajouter les tomates et les épices.',
+      'Ajouter le poisson.',
+      'Laisser mijoter doucement.',
+    ],
   },
-
   {
-    id: '17',
-    name: 'Ndomba de poulet',
+    id: '8',
+    name: 'Plantain mûr frit',
     region: 'Centre',
-    description: 'Poulet épicé cuit dans des feuilles de bananier pour conserver ses arômes.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Ndomba%20de%20poulet.jpg',
+    category: 'Accompagnements',
+    time: '20 min',
+    rating: '4.6',
+    emoji: '🍌',
+    image:
+      'https://images.unsplash.com/photo-1528825871115-3581a5387919?w=900',
+    description:
+      'Bananes plantains mûres frites, croustillantes à l’extérieur et fondantes à l’intérieur.',
     ingredients: [
-      '1 poulet',
-      '2 oignons',
-      '3 gousses d’ail',
-      'Gingembre',
-      'Piment',
-      'Poivre',
+      'Bananes plantains mûres',
+      'Huile',
       'Sel',
-      'Feuilles de bananier'
     ],
-    steps: [
-      'Découper et assaisonner le poulet.',
-      'Écraser ail, gingembre, oignon et épices.',
-      'Mélanger le poulet avec les aromates.',
-      'Placer la préparation dans les feuilles de bananier.',
-      'Fermer soigneusement le paquet.',
-      'Cuire à la vapeur jusqu’à ce que le poulet soit tendre.'
-    ]
+    preparation: [
+      'Éplucher les plantains.',
+      'Les couper en morceaux.',
+      'Chauffer l’huile.',
+      'Faire frire jusqu’à coloration dorée.',
+      'Égoutter et servir.',
+    ],
   },
-
-  {
-    id: '18',
-    name: 'Ndomba de porc',
-    region: 'Centre',
-    description: 'Porc épicé cuit traditionnellement dans des feuilles de bananier.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Ndomba%20de%20porc%20et%20frites%20de%20plantain%20mûr.jpg',
-    ingredients: [
-      '800 g de porc',
-      '2 oignons',
-      '3 gousses d’ail',
-      'Gingembre',
-      'Piment',
-      'Poivre',
-      'Sel',
-      'Plantains mûrs'
-    ],
-    steps: [
-      'Découper le porc.',
-      'Préparer la marinade avec ail, gingembre et épices.',
-      'Mélanger le porc avec la marinade.',
-      'Envelopper dans des feuilles de bananier.',
-      'Cuire doucement jusqu’à ce que la viande soit tendre.',
-      'Servir avec des plantains mûrs.'
-    ]
-  },
-
-  {
-    id: '19',
-    name: 'Suya',
-    region: 'Extrême-Nord',
-    description: 'Brochettes de viande grillée fortement assaisonnées, populaires dans la cuisine camerounaise.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Suya.jpg',
-    ingredients: [
-      '500 g de bœuf',
-      '100 g d’arachides grillées',
-      'Piment',
-      'Paprika',
-      'Poivre',
-      'Sel',
-      'Huile'
-    ],
-    steps: [
-      'Découper la viande en fines lamelles.',
-      'Préparer la poudre d’arachides et les épices.',
-      'Enrober généreusement la viande.',
-      'Placer la viande sur des brochettes.',
-      'Griller sur feu vif en retournant régulièrement.',
-      'Servir chaud avec oignons et tomates.'
-    ]
-  },
-
-  {
-    id: '20',
-    name: 'Nnam Ngon',
-    region: 'Centre',
-    description: 'Préparation traditionnelle camerounaise à base de pistache, généralement cuite dans des feuilles.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Le%20mets%20de%20pistache%20%28Nnam%20ngon%29.jpg',
-    ingredients: [
-      '500 g de graines de pistache',
-      '200 g de viande ou poisson',
-      '1 oignon',
-      'Piment',
-      'Sel',
-      'Feuilles de bananier'
-    ],
-    steps: [
-      'Écraser les graines de pistache.',
-      'Ajouter la viande ou le poisson.',
-      'Ajouter oignon, piment et sel.',
-      'Mélanger jusqu’à obtenir une pâte homogène.',
-      'Envelopper dans les feuilles.',
-      'Cuire à la vapeur jusqu’à obtenir une préparation ferme.'
-    ]
-  },
-
-  {
-    id: '21',
-    name: 'Mintumba',
-    region: 'Littoral',
-    description: 'Gâteau traditionnel préparé à base de manioc et cuit dans des feuilles.',
-    image: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Mintumba.jpg',
-    ingredients: [
-      '1 kg de manioc',
-      '150 ml d’huile de palme',
-      '1 oignon',
-      'Piment',
-      'Sel',
-      'Feuilles de bananier'
-    ],
-    steps: [
-      'Éplucher et râper le manioc.',
-      'Presser le manioc pour retirer l’excès d’eau.',
-      'Ajouter l’huile de palme et les épices.',
-      'Mélanger soigneusement.',
-      'Envelopper dans les feuilles.',
-      "Cuire à la vapeur jusqu'à obtenir une texture ferme."
-          ],
-    }
-  ];
-
-const RECIPE_IMAGES = [
-
-
-  require('./assets/recipes/ndole.jpg'),
-  require('./assets/recipes/ndole_crevettes.jpg'),
-  require('./assets/recipes/poulet_dg.jpg'),
-  require('./assets/recipes/eru.jpg'),
-  require('./assets/recipes/garri_eru.jpg'),
-  require('./assets/recipes/water_fufu_eru.jpg'),
-  require('./assets/recipes/achu.jpg'),
-  require('./assets/recipes/taro.jpg'),
-  require('./assets/recipes/koki.jpg'),
-  require('./assets/recipes/koki_plantain.jpg'),
-  require('./assets/recipes/kwacoco.jpg'),
-  require('./assets/recipes/kati_kati.jpg'),
-  require('./assets/recipes/fufu_kati.jpg'),
-  require('./assets/recipes/poisson_braise.jpg'),
-  require('./assets/recipes/sanga.jpg'),
-  require('./assets/recipes/mbongo.jpg'),
-  require('./assets/recipes/ndomba_poulet.jpg'),
-  require('./assets/recipes/ndomba_porc.jpg'),
-  require('./assets/recipes/suya.jpg'),
-  require('./assets/recipes/nnam_ngon.jpg'),
-  require('./assets/recipes/mintumba.jpg')
 ];
-
-RECIPES.forEach((recipe, index) => {
-  recipe.image = RECIPE_IMAGES[index];
-});  
-
-
-
 
 const REGIONS = [
   'Toutes',
-  ...Array.from(new Set(RECIPES.map((item) => item.region)))
+  'Centre',
+  'Littoral',
+  'Ouest',
+  'Nord-Ouest',
+  'Sud-Ouest',
 ];
 
+const CATEGORIES = [
+  { name: 'Toutes', icon: '🍽️' },
+  { name: 'Plats', icon: '🍲' },
+  { name: 'Grillades', icon: '🔥' },
+  { name: 'Accompagnements', icon: '🍌' },
+];
+
+function Header({ onProfile }) {
+  return (
+    <View style={styles.header}>
+      <View>
+        <Text style={styles.logo}>🇨🇲 Cam Food</Text>
+        <Text style={styles.subtitle}>La cuisine camerounaise</Text>
+      </View>
+
+      <Pressable style={styles.profileButton} onPress={onProfile}>
+        <Text style={styles.profileIcon}>👤</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+function SearchBar({ value, onChange }) {
+  return (
+    <View style={styles.searchBox}>
+      <Text style={styles.searchIcon}>🔎</Text>
+      <TextInput
+        value={value}
+        onChangeText={onChange}
+        placeholder="Rechercher une recette..."
+        placeholderTextColor="#999"
+        style={styles.searchInput}
+      />
+      {value.length > 0 && (
+        <Pressable onPress={() => onChange('')}>
+          <Text style={styles.clearText}>✕</Text>
+        </Pressable>
+      )}
+    </View>
+  );
+}
+
+function RecipeCard({ recipe, favorite, onFavorite, onOpen }) {
+  return (
+    <Pressable style={styles.card} onPress={() => onOpen(recipe)}>
+      <View style={styles.imageWrap}>
+        <Image source={{ uri: recipe.image }} style={styles.cardImage} />
+        <View style={styles.emojiBadge}>
+          <Text>{recipe.emoji}</Text>
+        </View>
+
+        <Pressable
+          style={styles.favoriteButton}
+          onPress={(event) => {
+            event.stopPropagation();
+            onFavorite(recipe.id);
+          }}
+        >
+          <Text style={{ fontSize: 20 }}>
+            {favorite ? '❤️' : '🤍'}
+          </Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.cardContent}>
+        <Text style={styles.cardTitle}>{recipe.name}</Text>
+        <Text style={styles.cardRegion}>📍 {recipe.region}</Text>
+
+        <View style={styles.cardBottom}>
+          <Text style={styles.rating}>⭐ {recipe.rating}</Text>
+          <Text style={styles.time}>⏱ {recipe.time}</Text>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+function RecipeModal({ recipe, visible, onClose, onAddShopping }) {
+  if (!recipe) return null;
+
+  return (
+    <Modal visible={visible} animationType="slide">
+      <SafeAreaView style={styles.modalSafe}>
+        <StatusBar barStyle="light-content" />
+
+        <ScrollView>
+          <View style={styles.detailImageWrap}>
+            <Image
+              source={{ uri: recipe.image }}
+              style={styles.detailImage}
+            />
+
+            <Pressable style={styles.closeButton} onPress={onClose}>
+              <Text style={styles.closeButtonText}>✕</Text>
+            </Pressable>
+
+            <View style={styles.detailEmoji}>
+              <Text style={{ fontSize: 32 }}>{recipe.emoji}</Text>
+            </View>
+          </View>
+
+          <View style={styles.detailContent}>
+            <Text style={styles.detailTitle}>{recipe.name}</Text>
+
+            <View style={styles.infoRow}>
+              <Text style={styles.infoPill}>📍 {recipe.region}</Text>
+              <Text style={styles.infoPill}>⭐ {recipe.rating}</Text>
+              <Text style={styles.infoPill}>⏱ {recipe.time}</Text>
+            </View>
+
+            <Text style={styles.detailDescription}>
+              {recipe.description}
+            </Text>
+
+            <Text style={styles.sectionTitle}>🛒 Ingrédients</Text>
+
+            {recipe.ingredients.map((ingredient, index) => (
+              <Pressable
+                key={index}
+                style={styles.ingredientRow}
+                onPress={() => onAddShopping(ingredient)}
+              >
+                <Text style={styles.ingredientCheck}>＋</Text>
+                <Text style={styles.ingredientText}>{ingredient}</Text>
+              </Pressable>
+            ))}
+
+            <Text style={styles.sectionTitle}>👨‍🍳 Préparation</Text>
+
+            {recipe.preparation.map((step, index) => (
+              <View key={index} style={styles.stepRow}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>{index + 1}</Text>
+                </View>
+                <Text style={styles.stepText}>{step}</Text>
+              </View>
+            ))}
+
+            <Pressable
+              style={styles.mainButton}
+              onPress={() => {
+                recipe.ingredients.forEach(onAddShopping);
+                Alert.alert(
+                  'Ajouté !',
+                  'Les ingrédients ont été ajoutés à votre liste de courses.'
+                );
+              }}
+            >
+              <Text style={styles.mainButtonText}>
+                🛒 Ajouter les ingrédients
+              </Text>
+            </Pressable>
+
+            <View style={{ height: 40 }} />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </Modal>
+  );
+}
+
+function HomeScreen({
+  search,
+  setSearch,
+  region,
+  setRegion,
+  category,
+  setCategory,
+  recipes,
+  favorites,
+  toggleFavorite,
+  openRecipe,
+}) {
+  return (
+    <FlatList
+      data={recipes}
+      keyExtractor={(item) => item.id}
+      numColumns={2}
+      showsVerticalScrollIndicator={false}
+      columnWrapperStyle={styles.columnWrapper}
+      contentContainerStyle={styles.listContent}
+      ListHeaderComponent={
+        <>
+          <View style={styles.hero}>
+            <View style={styles.heroText}>
+              <Text style={styles.heroSmall}>BIENVENUE SUR</Text>
+              <Text style={styles.heroTitle}>Cam Food 🇨🇲</Text>
+              <Text style={styles.heroDescription}>
+                Découvre les saveurs authentiques du Cameroun.
+              </Text>
+            </View>
+            <Text style={styles.heroEmoji}>🍲</Text>
+          </View>
+
+          <SearchBar value={search} onChange={setSearch} />
+
+          <Text style={styles.sectionHeading}>Catégories</Text>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalList}
+          >
+            {CATEGORIES.map((item) => (
+              <Pressable
+                key={item.name}
+                onPress={() => setCategory(item.name)}
+                style={[
+                  styles.categoryChip,
+                  category === item.name && styles.categoryChipActive,
+                ]}
+              >
+                <Text style={styles.categoryIcon}>{item.icon}</Text>
+                <Text
+                  style={[
+                    styles.categoryText,
+                    category === item.name && styles.categoryTextActive,
+                  ]}
+                >
+                  {item.name}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+
+          <Text style={styles.sectionHeading}>Régions</Text>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalList}
+          >
+            {REGIONS.map((item) => (
+              <Pressable
+                key={item}
+                onPress={() => setRegion(item)}
+                style={[
+                  styles.regionChip,
+                  region === item && styles.regionChipActive,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.regionText,
+                    region === item && styles.regionTextActive,
+                  ]}
+                >
+                  {item}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+
+          <View style={styles.recipeHeadingRow}>
+            <Text style={styles.sectionHeading}>Nos recettes</Text>
+            <Text style={styles.recipeCount}>{recipes.length} recettes</Text>
+          </View>
+        </>
+      }
+      renderItem={({ item }) => (
+        <RecipeCard
+          recipe={item}
+          favorite={favorites.includes(item.id)}
+          onFavorite={toggleFavorite}
+          onOpen={openRecipe}
+        />
+      )}
+      ListEmptyComponent={
+        <View style={styles.empty}>
+          <Text style={styles.emptyEmoji}>😕</Text>
+          <Text style={styles.emptyTitle}>Aucune recette trouvée</Text>
+          <Text style={styles.emptyText}>
+            Essaie une autre recherche ou une autre région.
+          </Text>
+        </View>
+      }
+    />
+  );
+}
+
+function FavoritesScreen({
+  recipes,
+  favorites,
+  toggleFavorite,
+  openRecipe,
+}) {
+  const favoriteRecipes = recipes.filter((r) =>
+    favorites.includes(r.id)
+  );
+
+  if (favoriteRecipes.length === 0) {
+    return (
+      <View style={styles.emptyScreen}>
+        <Text style={styles.emptyEmoji}>❤️</Text>
+        <Text style={styles.emptyTitle}>Aucun favori</Text>
+        <Text style={styles.emptyText}>
+          Appuie sur ❤️ sur une recette pour la retrouver ici.
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <FlatList
+      data={favoriteRecipes}
+      keyExtractor={(item) => item.id}
+      numColumns={2}
+      columnWrapperStyle={styles.columnWrapper}
+      contentContainerStyle={styles.listContent}
+      ListHeaderComponent={
+        <Text style={styles.pageTitle}>❤️ Mes favoris</Text>
+      }
+      renderItem={({ item }) => (
+        <RecipeCard
+          recipe={item}
+          favorite
+          onFavorite={toggleFavorite}
+          onOpen={openRecipe}
+        />
+      )}
+    />
+  );
+}
+
+function ShoppingScreen({ shopping, removeShopping, clearShopping }) {
+  return (
+    <View style={styles.screen}>
+      <View style={styles.shoppingHeader}>
+        <View>
+          <Text style={styles.pageTitle}>🛒 Ma liste</Text>
+          <Text style={styles.shoppingSubtitle}>
+            {shopping.length} élément(s)
+          </Text>
+        </View>
+
+        {shopping.length > 0 && (
+          <Pressable onPress={clearShopping}>
+            <Text style={styles.deleteAll}>Tout vider</Text>
+          </Pressable>
+        )}
+      </View>
+
+      {shopping.length === 0 ? (
+        <View style={styles.emptyScreen}>
+          <Text style={styles.emptyEmoji}>🛒</Text>
+          <Text style={styles.emptyTitle}>Liste vide</Text>
+          <Text style={styles.emptyText}>
+            Ajoute des ingrédients depuis une recette.
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={shopping}
+          keyExtractor={(item, index) => `${item}-${index}`}
+          contentContainerStyle={{ paddingBottom: 30 }}
+          renderItem={({ item }) => (
+            <View style={styles.shoppingItem}>
+              <View style={styles.shoppingCircle}>
+                <Text>✓</Text>
+              </View>
+
+              <Text style={styles.shoppingText}>{item}</Text>
+
+              <Pressable onPress={() => removeShopping(item)}>
+                <Text style={styles.removeText}>✕</Text>
+              </Pressable>
+            </View>
+          )}
+        />
+      )}
+    </View>
+  );
+}
+
+function ProfileScreen({ favorites, shopping }) {
+  return (
+    <ScrollView
+      style={styles.screen}
+      contentContainerStyle={{ paddingBottom: 40 }}
+    >
+      <View style={styles.profileHero}>
+        <View style={styles.bigAvatar}>
+          <Text style={{ fontSize: 40 }}>👨🏾‍🍳</Text>
+        </View>
+        <Text style={styles.profileName}>Bienvenue sur Cam Food</Text>
+        <Text style={styles.profileSub}>
+          Ton carnet de cuisine camerounaise
+        </Text>
+      </View>
+
+      <View style={styles.statsRow}>
+        <View style={styles.statCard}>
+          <Text style={styles.statNumber}>{RECIPES.length}</Text>
+          <Text style={styles.statLabel}>Recettes</Text>
+        </View>
+
+        <View style={styles.statCard}>
+          <Text style={styles.statNumber}>{favorites.length}</Text>
+          <Text style={styles.statLabel}>Favoris</Text>
+        </View>
+
+        <View style={styles.statCard}>
+          <Text style={styles.statNumber}>{shopping.length}</Text>
+          <Text style={styles.statLabel}>Courses</Text>
+        </View>
+      </View>
+
+      <Text style={styles.sectionTitle}>À propos</Text>
+
+      <View style={styles.aboutCard}>
+        <Text style={styles.aboutTitle}>🇨🇲 Cam Food</Text>
+        <Text style={styles.aboutText}>
+          Une application dédiée aux recettes et aux saveurs du Cameroun.
+          Explore les plats traditionnels, découvre les différentes régions
+          culinaires et prépare facilement tes recettes préférées.
+        </Text>
+      </View>
+
+      <View style={styles.aboutCard}>
+        <Text style={styles.aboutTitle}>✨ Version</Text>
+        <Text style={styles.aboutText}>Cam Food 1.0 • React Native + Expo</Text>
+      </View>
+    </ScrollView>
+  );
+}
+
 export default function App() {
+  const [tab, setTab] = useState('home');
   const [search, setSearch] = useState('');
   const [region, setRegion] = useState('Toutes');
-  const [selected, setSelected] = useState(null);
+  const [category, setCategory] = useState('Toutes');
+  const [favorites, setFavorites] = useState([]);
+  const [shopping, setShopping] = useState([]);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   const filteredRecipes = useMemo(() => {
     const query = search.trim().toLowerCase();
 
     return RECIPES.filter((recipe) => {
+      const matchesSearch =
+        !query ||
+        recipe.name.toLowerCase().includes(query) ||
+        recipe.region.toLowerCase().includes(query) ||
+        recipe.ingredients.some((item) =>
+          item.toLowerCase().includes(query)
+        );
+
       const matchesRegion =
         region === 'Toutes' || recipe.region === region;
 
-      const text =
-        `${recipe.name} ${recipe.region} ${recipe.description} ${recipe.ingredients.join(' ')}`
-          .toLowerCase();
+      const matchesCategory =
+        category === 'Toutes' || recipe.category === category;
 
-      return matchesRegion && (!query || text.includes(query));
+      return matchesSearch && matchesRegion && matchesCategory;
     });
-  }, [search, region]);
+  }, [search, region, category]);
 
-        return (
-  <SafeAreaView style={styles.safe}>
-    <StatusBar
-      barStyle="light-content"
-      backgroundColor="#0B6B3A"
-    />
+  const toggleFavorite = (id) => {
+    setFavorites((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : [...current, id]
+    );
+  };
 
-    <View style={styles.page}>
-      <ImageBackground
-        source={RECIPES[0]?.image}
-        style={styles.header}
-        imageStyle={styles.headerImage}
-      >
-        <View style={styles.headerOverlay}>
-          <Text style={styles.logo}>Cam Food</Text>
+  const addShopping = (ingredient) => {
+    setShopping((current) =>
+      current.includes(ingredient)
+        ? current
+        : [...current, ingredient]
+    );
+  };
 
-          <Text style={styles.subtitle}>
-            La cuisine camerounaise dans votre téléphone
-          </Text>
+  const removeShopping = (ingredient) => {
+    setShopping((current) =>
+      current.filter((item) => item !== ingredient)
+    );
+  };
 
-          <View style={styles.searchBox}>
-            <Text style={styles.searchIcon}>⌕</Text>
+  const clearShopping = () => {
+    Alert.alert(
+      'Vider la liste',
+      'Voulez-vous vraiment supprimer tous les ingrédients ?',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Vider',
+          style: 'destructive',
+          onPress: () => setShopping([]),
+        },
+      ]
+    );
+  };
 
-            <TextInput
-              value={search}
-              onChangeText={setSearch}
-              placeholder="Rechercher une recette ou un ingrédient..."
-              placeholderTextColor="#777"
-              style={styles.search}
-            />
-          </View>
-        </View>
-      </ImageBackground>
+  const renderScreen = () => {
+    if (tab === 'favorites') {
+      return (
+        <FavoritesScreen
+          recipes={RECIPES}
+          favorites={favorites}
+          toggleFavorite={toggleFavorite}
+          openRecipe={setSelectedRecipe}
+        />
+      );
+    }
 
-      <View style={styles.content}>
-        <Text style={styles.sectionTitle}>
-          Découvrir par région
-        </Text>
+    if (tab === 'shopping') {
+      return (
+        <ShoppingScreen
+          shopping={shopping}
+          removeShopping={removeShopping}
+          clearShopping={clearShopping}
+        />
+      );
+    }
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filters}
-        >
-          {REGIONS.map((item) => (
-            <Pressable
-              key={item}
-              onPress={() => setRegion(item)}
-              style={[
-                styles.filter,
-                region === item && styles.filterActive
-              ]}
-            >
-              <Text
-                style={[
-                  styles.filterText,
-                  region === item && styles.filterTextActive
-                ]}
-              >
-                {item}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
+    if (tab === 'profile') {
+      return (
+        <ProfileScreen
+          favorites={favorites}
+          shopping={shopping}
+        />
+      );
+    }
 
-        <View style={styles.recipeHeader}>
-          <Text style={styles.sectionTitle}>
-            Recettes
-          </Text>
+    return (
+      <HomeScreen
+        search={search}
+        setSearch={setSearch}
+        region={region}
+        setRegion={setRegion}
+        category={category}
+        setCategory={setCategory}
+        recipes={filteredRecipes}
+        favorites={favorites}
+        toggleFavorite={toggleFavorite}
+        openRecipe={setSelectedRecipe}
+      />
+    );
+  };
 
-          <Text style={styles.recipeCount}>
-            {filteredRecipes.length}
-          </Text>
-        </View>
+  return (
+    <SafeAreaView style={styles.app}>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={COLORS.cream}
+      />
 
-        <FlatList
-          data={filteredRecipes}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.list}
-          ListEmptyComponent={
-            <View style={styles.empty}>
-              <Text style={styles.emptyTitle}>
-                Aucune recette trouvée
-              </Text>
+      {tab === 'home' && (
+        <Header onProfile={() => setTab('profile')} />
+      )}
 
-              <Text style={styles.emptyText}>
-                Essayez un autre nom, ingrédient ou région.
-              </Text>
-            </View>
-          }
-          renderItem={({ item }) => (
-            <Pressable
-              style={styles.card}
-              onPress={() => setSelected(item)}
-            >
-              <Image
-                source={item.image}
-                style={styles.cardImage}
-              />
+      <View style={styles.content}>{renderScreen()}</View>
 
-              <View style={styles.cardBody}>
-                <View style={styles.rowBetween}>
-                  <Text style={styles.cardTitle}>
-                    {item.name}
-                  </Text>
-
-                  <View style={styles.regionBadge}>
-                    <Text style={styles.region}>
-                      {item.region}
-                    </Text>
-                  </View>
-                </View>
-
-                <Text style={styles.description}>
-                  {item.description}
-                </Text>
-
-                <Text style={styles.openText}>
-                  Voir la recette  →
-                </Text>
-              </View>
-            </Pressable>
-          )}
+      <View style={styles.bottomNav}>
+        <NavButton
+          icon="🏠"
+          label="Accueil"
+          active={tab === 'home'}
+          onPress={() => setTab('home')}
         />
 
+        <NavButton
+          icon="❤️"
+          label="Favoris"
+          active={tab === 'favorites'}
+          onPress={() => setTab('favorites')}
+          badge={favorites.length}
+        />
+
+        <NavButton
+          icon="🛒"
+          label="Courses"
+          active={tab === 'shopping'}
+          onPress={() => setTab('shopping')}
+          badge={shopping.length}
+        />
+
+        <NavButton
+          icon="👤"
+          label="Profil"
+          active={tab === 'profile'}
+          onPress={() => setTab('profile')}
+        />
       </View>
 
-      <Modal
-        visible={Boolean(selected)}
-        animationType="slide"
-        onRequestClose={() => setSelected(null)}
-      >
-        {selected && (
-          <SafeAreaView style={styles.modalSafe}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <Image
-                source={selected.image}
-                style={styles.hero}
-              />
+      <RecipeModal
+        recipe={selectedRecipe}
+        visible={!!selectedRecipe}
+        onClose={() => setSelectedRecipe(null)}
+        onAddShopping={addShopping}
+      />
+    </SafeAreaView>
+  );
+}
 
-              <View style={styles.detail}>
-                <Pressable
-                  onPress={() => setSelected(null)}
-                  style={styles.close}
-                >
-                  <Text style={styles.closeText}>
-                    Fermer
-                  </Text>
-                </Pressable>
+function NavButton({ icon, label, active, onPress, badge }) {
+  return (
+    <Pressable style={styles.navButton} onPress={onPress}>
+      <View>
+        <Text style={[styles.navIcon, active && styles.navIconActive]}>
+          {icon}
+        </Text>
 
-                <Text style={styles.detailTitle}>
-                  {selected.name}
-                </Text>
-
-                <View style={styles.detailRegionBadge}>
-                  <Text style={styles.detailRegion}>
-                    {selected.region}
-                  </Text>
-                </View>
-
-                <Text style={styles.detailDescription}>
-                  {selected.description}
-                </Text>
-
-                <Text style={styles.detailHeading}>
-                  Ingrédients
-                </Text>
-
-                {selected.ingredients.map(
-                  (ingredient, index) => (
-                    <Text
-                      key={`${selected.id}-i-${index}`}
-                      style={styles.bullet}
-                    >
-                      • {ingredient}
-                    </Text>
-                  )
-                )}
-
-                <Text style={styles.detailHeading}>
-                  Préparation
-                </Text>
-
-                {selected.steps.map((step, index) => (
-                  <View
-                    key={`${selected.id}-s-${index}`}
-                    style={styles.step}
-                  >
-                    <View style={styles.number}>
-                      <Text style={styles.numberText}>
-                        {index + 1}
-                      </Text>
-                    </View>
-
-                    <Text style={styles.stepText}>
-                      {step}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </ScrollView>
-          </SafeAreaView>
+        {badge > 0 && (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{badge}</Text>
+          </View>
         )}
-      </Modal>
-    </View>
-  </SafeAreaView>
-);
-                        }    
-  
+      </View>
 
+      <Text style={[styles.navLabel, active && styles.navLabelActive]}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
 
 const styles = StyleSheet.create({
-    safe: {
+  app: {
     flex: 1,
-    backgroundColor: '#F5F1E8'
-  },
-
-  page: {
-    flex: 1,
-    backgroundColor: '#F5F1E8'
-  },
-
-  header: {
-    height: 235,
-    justifyContent: 'flex-end'
-  },
-
-  headerImage: {
-    opacity: 0.9
-  },
-
-  headerOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 18,
-    paddingBottom: 20,
-    paddingTop: 25,
-    backgroundColor: 'rgba(5, 70, 35, 0.68)'
-  },
-
-  logo: {
-    color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: '900'
-  },
-
-  subtitle: {
-    color: '#F0FFF5',
-    marginTop: 4,
-    fontSize: 14,
-    fontWeight: '500'
-  },
-
-  searchBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    marginTop: 16,
-    paddingHorizontal: 13,
-    shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5
-  },
-
-  searchIcon: {
-    fontSize: 25,
-    color: '#0B6B3A',
-    marginRight: 4
-  },
-
-  search: {
-    flex: 1,
-    paddingHorizontal: 8,
-    paddingVertical: 13,
-    fontSize: 15,
-    color: '#222'
+    backgroundColor: COLORS.cream,
   },
 
   content: {
     flex: 1,
-    paddingHorizontal: 16
   },
 
-  sectionTitle: {
-    fontSize: 19,
-    fontWeight: '900',
-    color: '#202020',
-    marginTop: 16,
-    marginBottom: 9
-  },
-
-  filters: {
-    paddingRight: 10
-  },
-
-  filter: {
-    paddingHorizontal: 15,
-    paddingVertical: 9,
-    borderRadius: 22,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#DDD8CE',
-    marginRight: 8
-  },
-
-  filterActive: {
-    backgroundColor: '#0B6B3A',
-    borderColor: '#0B6B3A'
-  },
-
-  filterText: {
-    color: '#444',
-    fontWeight: '700'
-  },
-
-  filterTextActive: {
-    color: '#FFFFFF'
-  },
-
-  recipeHeader: {
+  header: {
+    height: 76,
+    paddingHorizontal: 18,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.cream,
+  },
+
+  logo: {
+    fontSize: 25,
+    fontWeight: '900',
+    color: COLORS.dark,
+  },
+
+  subtitle: {
+    marginTop: 2,
+    fontSize: 12,
+    color: COLORS.gray,
+  },
+
+  profileButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2,
+  },
+
+  profileIcon: {
+    fontSize: 22,
+  },
+
+  hero: {
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 18,
+    padding: 20,
+    minHeight: 150,
+    borderRadius: 24,
+    backgroundColor: COLORS.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    overflow: 'hidden',
+  },
+
+  heroText: {
+    flex: 1,
+  },
+
+  heroSmall: {
+    color: '#FFE5D0',
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+
+  heroTitle: {
+    color: COLORS.white,
+    fontSize: 30,
+    fontWeight: '900',
+    marginTop: 4,
+  },
+
+  heroDescription: {
+    color: COLORS.white,
+    opacity: 0.9,
+    fontSize: 13,
+    lineHeight: 19,
+    marginTop: 6,
+    maxWidth: 240,
+  },
+
+  heroEmoji: {
+    fontSize: 65,
+    marginLeft: 8,
+  },
+
+  searchBox: {
+    height: 52,
+    marginHorizontal: 16,
+    marginBottom: 20,
+    borderRadius: 16,
+    backgroundColor: COLORS.white,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    elevation: 2,
+  },
+
+  searchIcon: {
+    fontSize: 20,
+    marginRight: 9,
+  },
+
+  searchInput: {
+    flex: 1,
+    fontSize: 15,
+    color: COLORS.dark,
+  },
+
+  clearText: {
+    color: COLORS.gray,
+    fontSize: 17,
+    padding: 5,
+  },
+
+  sectionHeading: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: COLORS.dark,
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+
+  horizontalList: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+
+  categoryChip: {
+    minWidth: 88,
+    height: 68,
+    marginRight: 10,
+    paddingHorizontal: 14,
+    borderRadius: 17,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 1,
+  },
+
+  categoryChipActive: {
+    backgroundColor: COLORS.primary,
+  },
+
+  categoryIcon: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+
+  categoryText: {
+    color: COLORS.dark,
+    fontSize: 11,
+    fontWeight: '700',
+  },
+
+  categoryTextActive: {
+    color: COLORS.white,
+  },
+
+  regionChip: {
+    paddingHorizontal: 16,
+    height: 38,
+    marginRight: 9,
+    borderRadius: 20,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 1,
+  },
+
+  regionChipActive: {
+    backgroundColor: COLORS.dark,
+  },
+
+  regionText: {
+    color: COLORS.dark,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+
+  regionTextActive: {
+    color: COLORS.white,
+  },
+
+  recipeHeadingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: 16,
   },
 
   recipeCount: {
-    backgroundColor: '#0B6B3A',
-    color: '#FFFFFF',
-    minWidth: 32,
-    textAlign: 'center',
-    paddingHorizontal: 9,
-    paddingVertical: 5,
-    borderRadius: 15,
-    fontWeight: '900',
-    overflow: 'hidden'
+    color: COLORS.gray,
+    fontSize: 12,
+    marginBottom: 12,
   },
 
-  list: {
-    paddingBottom: 30
+  listContent: {
+    paddingBottom: 25,
+  },
+
+  columnWrapper: {
+    paddingHorizontal: 11,
+    justifyContent: 'space-between',
   },
 
   card: {
-    backgroundColor: '#FFFFFF',
+    width: '47%',
+    marginHorizontal: 5,
+    marginBottom: 15,
     borderRadius: 18,
+    backgroundColor: COLORS.white,
     overflow: 'hidden',
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#E5E0D6',
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: {
-      width: 0,
-      height: 3
-    },
-    elevation: 3
+    elevation: 2,
+  },
+
+  imageWrap: {
+    height: 140,
+    position: 'relative',
   },
 
   cardImage: {
     width: '100%',
-    height: 205,
-    backgroundColor: '#DDD'
+    height: '100%',
+    backgroundColor: COLORS.light,
   },
 
-  cardBody: {
-    padding: 15
+  emojiBadge: {
+    position: 'absolute',
+    left: 8,
+    bottom: 8,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
-  rowBetween: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between'
+  favoriteButton: {
+    position: 'absolute',
+    right: 8,
+    top: 8,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  cardContent: {
+    padding: 11,
   },
 
   cardTitle: {
-    flex: 1,
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: '900',
-    color: '#202020',
-    marginRight: 8
+    color: COLORS.dark,
   },
 
-  regionBadge: {
-    backgroundColor: '#E8F5ED',
-    paddingHorizontal: 9,
-    paddingVertical: 5,
-    borderRadius: 12
+  cardRegion: {
+    color: COLORS.gray,
+    fontSize: 10,
+    marginTop: 4,
   },
 
-  region: {
-    color: '#0B6B3A',
+  cardBottom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+
+  rating: {
+    color: COLORS.primary,
+    fontSize: 10,
     fontWeight: '800',
-    fontSize: 11
   },
 
-  description: {
-    color: '#666',
-    marginTop: 8,
-    lineHeight: 20,
-    fontSize: 14
+  time: {
+    color: COLORS.gray,
+    fontSize: 10,
   },
 
-  openText: {
-    color: '#0B6B3A',
+  bottomNav: {
+    height: 70,
+    backgroundColor: COLORS.white,
+    borderTopWidth: 1,
+    borderTopColor: '#EEEEEE',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+
+  navButton: {
+    minWidth: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  navIcon: {
+    fontSize: 21,
+    opacity: 0.55,
+  },
+
+  navIconActive: {
+    opacity: 1,
+  },
+
+  navLabel: {
+    fontSize: 10,
+    marginTop: 3,
+    color: COLORS.gray,
+    fontWeight: '600',
+  },
+
+  navLabelActive: {
+    color: COLORS.primary,
     fontWeight: '900',
-    marginTop: 12,
-    fontSize: 14
+  },
+
+  badge: {
+    position: 'absolute',
+    right: -9,
+    top: -5,
+    minWidth: 16,
+    height: 16,
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    backgroundColor: COLORS.red,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  badgeText: {
+    color: COLORS.white,
+    fontSize: 9,
+    fontWeight: '900',
   },
 
   empty: {
+    width: '100%',
     alignItems: 'center',
-    paddingVertical: 50
+    paddingTop: 45,
+  },
+
+  emptyScreen: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 30,
+  },
+
+  emptyEmoji: {
+    fontSize: 55,
+    marginBottom: 12,
   },
 
   emptyTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#222'
+    fontSize: 20,
+    fontWeight: '900',
+    color: COLORS.dark,
   },
 
   emptyText: {
-    color: '#666',
-    marginTop: 6,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: COLORS.gray,
+    lineHeight: 20,
+    marginTop: 7,
   },
 
   modalSafe: {
     flex: 1,
-    backgroundColor: '#F5F1E8'
+    backgroundColor: COLORS.cream,
   },
 
-  hero: {
+  detailImageWrap: {
+    height: 300,
+    position: 'relative',
+  },
+
+  detailImage: {
     width: '100%',
-    height: 280,
-    backgroundColor: '#DDD'
+    height: '100%',
+    backgroundColor: COLORS.light,
   },
 
-  detail: {
-    padding: 18,
-    paddingBottom: 45
+  closeButton: {
+    position: 'absolute',
+    top: 15,
+    left: 15,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
-  close: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#E8E4DB',
-    paddingHorizontal: 15,
-    paddingVertical: 9,
-    borderRadius: 20,
-    marginBottom: 12
+  closeButtonText: {
+    fontSize: 20,
+    color: COLORS.dark,
   },
 
-  closeText: {
-    color: '#333',
-    fontWeight: '800'
+  detailEmoji: {
+    position: 'absolute',
+    bottom: -25,
+    left: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+  },
+
+  detailContent: {
+    padding: 22,
+    paddingTop: 40,
   },
 
   detailTitle: {
     fontSize: 30,
     fontWeight: '900',
-    color: '#202020'
+    color: COLORS.dark,
   },
 
-  detailRegionBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#E8F5ED',
+  infoRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 12,
+  },
+
+  infoPill: {
+    backgroundColor: COLORS.white,
     paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingVertical: 7,
     borderRadius: 15,
-    marginTop: 8
-  },
-
-  detailRegion: {
-    color: '#0B6B3A',
-    fontWeight: '900'
+    marginRight: 7,
+    marginBottom: 7,
+    color: COLORS.gray,
+    fontSize: 11,
+    fontWeight: '700',
   },
 
   detailDescription: {
-    color: '#555',
+    color: COLORS.gray,
+    fontSize: 14,
     lineHeight: 22,
-    marginTop: 12,
-    fontSize: 15
+    marginTop: 10,
   },
 
-  detailHeading: {
-    fontSize: 21,
+  sectionTitle: {
+    fontSize: 20,
     fontWeight: '900',
+    color: COLORS.dark,
     marginTop: 25,
-    marginBottom: 11,
-    color: '#202020'
+    marginBottom: 12,
   },
 
-  bullet: {
-    fontSize: 15,
-    lineHeight: 23,
-    color: '#333',
-    marginBottom: 6
-  },
-
-  step: {
+  ingredientRow: {
+    minHeight: 45,
+    backgroundColor: COLORS.white,
+    borderRadius: 12,
+    marginBottom: 8,
+    paddingHorizontal: 12,
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 14
+    alignItems: 'center',
   },
 
-  number: {
-    width: 31,
-    height: 31,
-    borderRadius: 16,
-    backgroundColor: '#0B6B3A',
+  ingredientCheck: {
+    color: COLORS.primary,
+    fontSize: 24,
+    marginRight: 10,
+  },
+
+  ingredientText: {
+    color: COLORS.dark,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
+  stepRow: {
+    flexDirection: 'row',
+    marginBottom: 13,
+  },
+
+  stepNumber: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 10
+    marginRight: 10,
   },
 
-  numberText: {
-    color: '#FFFFFF',
-    fontWeight: '900'
+  stepNumberText: {
+    color: COLORS.white,
+    fontWeight: '900',
   },
 
   stepText: {
     flex: 1,
+    color: COLORS.dark,
+    fontSize: 14,
+    lineHeight: 21,
+  },
+
+  mainButton: {
+    height: 54,
+    borderRadius: 16,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+
+  mainButtonText: {
+    color: COLORS.white,
     fontSize: 15,
-    lineHeight: 22,
-    color: '#333',
-    paddingTop: 3
-  }
+    fontWeight: '900',
+  },
+
+  screen: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 15,
+  },
+
+  pageTitle: {
+    fontSize: 26,
+    fontWeight: '900',
+    color: COLORS.dark,
+    marginBottom: 5,
+  },
+
+  shoppingHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+
+  shoppingSubtitle: {
+    color: COLORS.gray,
+    fontSize: 12,
+  },
+
+  deleteAll: {
+    color: COLORS.red,
+    fontSize: 13,
+    fontWeight: '800',
+  },
+
+  shoppingItem: {
+    minHeight: 58,
+    backgroundColor: COLORS.white,
+    borderRadius: 15,
+    paddingHorizontal: 14,
+    marginBottom: 9,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  shoppingCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#E8F5EC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+
+  shoppingText: {
+    flex: 1,
+    color: COLORS.dark,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
+  removeText: {
+    color: COLORS.red,
+    fontSize: 17,
+    padding: 5,
+  },
+
+  profileHero: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+
+  bigAvatar: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2,
+    marginBottom: 12,
+  },
+
+  profileName: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: COLORS.dark,
+    textAlign: 'center',
+  },
+
+  profileSub: {
+    color: COLORS.gray,
+    marginTop: 5,
+    textAlign: 'center',
+  },
+
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 15,
+  },
+
+  statCard: {
+    width: '31%',
+    paddingVertical: 15,
+    borderRadius: 15,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    elevation: 1,
+  },
+
+  statNumber: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: COLORS.primary,
+  },
+
+  statLabel: {
+    fontSize: 11,
+    color: COLORS.gray,
+    marginTop: 3,
+  },
+
+  aboutCard: {
+    backgroundColor: COLORS.white,
+    padding: 17,
+    borderRadius: 16,
+    marginBottom: 12,
+  },
+
+  aboutTitle: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: COLORS.dark,
+    marginBottom: 7,
+  },
+
+  aboutText: {
+    color: COLORS.gray,
+    fontSize: 13,
+    lineHeight: 20,
+  },
 });
-
-
-          
-          
-                          
-                                    
       
+      
+      
+                    
+
+                              
+
 
   
+
+      
