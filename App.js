@@ -541,7 +541,7 @@ Modal,
       'Ajouter l’huile de palme et les épices.',
       'Mélanger soigneusement.',
       'Envelopper dans les feuilles.',
-      'Cuire à la vapeur jusqu’à obtenir une texture ferme.'
+      "Cuire à la vapeur jusqu'à obtenir une texture ferme."
     ];
 
 const RECIPE_IMAGES = [
