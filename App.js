@@ -558,16 +558,18 @@ const RECIPE_IMAGES = [
   'https://upload.wikimedia.org/wikipedia/commons/d/d8/Koki_and_ripe_plantains.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/e/ed/Kwacoco_bible.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/e/ec/Kati_kati_cameroun.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/3/35/Fufu_corn_and_khati_khati.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/6/65/Fufu_corn_and_khati_khati.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/f/f8/Poisson_brais%C3%A9_et_fleur_de_citron..JPG',
   'https://upload.wikimedia.org/wikipedia/commons/7/7c/Sanga%2C_Plat_camerounais.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/1/1b/Mbongo_Tchobi_%28sauce_noir%29.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/1/1c/Ndomba_de_poulet.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/8/89/Ndomba_de_porc_et_frites_de_plantain_m%C3%BBr.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/f/f3/Ndomba_de_porc_et_frites_de_plantain_m%C3%BBr.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/5/54/Suya.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/6/69/Le_mets_de_pistache_%28Nnam_ngon%29.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/a/a7/Mintumba.jpg'
 ];
+  
+
 
 RECIPES.forEach((recipe, index) => {
   recipe.image = RECIPE_IMAGES[index];
@@ -608,7 +610,7 @@ export default function App() {
 
     <View style={styles.page}>
       <ImageBackground
-        source={{ uri: encodeURI(RECIPES[0]?.image) }}
+        source={{ uri: RECIPES[0]?.image}}
         style={styles.header}
         imageStyle={styles.headerImage}
       >
@@ -696,7 +698,7 @@ export default function App() {
               onPress={() => setSelected(item)}
             >
               <Image
-                source={{ uri: encodeURI(item.image) }}
+                source={{ uri: item.image }}
                 style={styles.cardImage}
               />
 
@@ -736,7 +738,7 @@ export default function App() {
           <SafeAreaView style={styles.modalSafe}>
             <ScrollView showsVerticalScrollIndicator={false}>
               <Image
-                source={{ uri: encodeURI(selected.image) }}
+                source={{ uri: selected.image }}
                 style={styles.hero}
               />
 
