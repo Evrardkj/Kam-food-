@@ -3,8 +3,11 @@
       import React, { useMemo, useState } from 'react';
 import {
   FlatList,
-  Image,
-  Modal,
+Image,
+ImageBackground,
+Modal,
+  
+
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -570,30 +573,44 @@ export default function App() {
     });
   }, [search, region]);
 
-  return (
-    <SafeAreaView style={styles.safe}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="#0B6B3A"
-      />
+        return (
+  <SafeAreaView style={styles.safe}>
+    <StatusBar
+      barStyle="light-content"
+      backgroundColor="#0B6B3A"
+    />
 
-      <View style={styles.header}>
-        <Text style={styles.logo}>Cam Food</Text>
-        <Text style={styles.subtitle}>
-          La cuisine camerounaise dans votre téléphone
-        </Text>
-      </View>
+    <View style={styles.page}>
+      <ImageBackground
+        source={{ uri: encodeURI(RECIPES[0]?.image) }}
+        style={styles.header}
+        imageStyle={styles.headerImage}
+      >
+        <View style={styles.headerOverlay}>
+          <Text style={styles.logo}>Cam Food</Text>
+
+          <Text style={styles.subtitle}>
+            La cuisine camerounaise dans votre téléphone
+          </Text>
+
+          <View style={styles.searchBox}>
+            <Text style={styles.searchIcon}>⌕</Text>
+
+            <TextInput
+              value={search}
+              onChangeText={setSearch}
+              placeholder="Rechercher une recette ou un ingrédient..."
+              placeholderTextColor="#777"
+              style={styles.search}
+            />
+          </View>
+        </View>
+      </ImageBackground>
 
       <View style={styles.content}>
-        <TextInput
-          value={search}
-          onChangeText={setSearch}
-          placeholder="Rechercher une recette ou un ingrédient..."
-          placeholderTextColor="#777"
-          style={styles.search}
-        />
-
-        <Text style={styles.sectionTitle}>Régions</Text>
+        <Text style={styles.sectionTitle}>
+          Découvrir par région
+        </Text>
 
         <ScrollView
           horizontal
@@ -621,12 +638,15 @@ export default function App() {
           ))}
         </ScrollView>
 
-        <Text style={styles.sectionTitle}>
-          Recettes
-          {filteredRecipes.length > 0
-            ? ` (${filteredRecipes.length})`
-            : ''}
-        </Text>
+        <View style={styles.recipeHeader}>
+          <Text style={styles.sectionTitle}>
+            Recettes
+          </Text>
+
+          <Text style={styles.recipeCount}>
+            {filteredRecipes.length}
+          </Text>
+        </View>
 
         <FlatList
           data={filteredRecipes}
@@ -638,6 +658,7 @@ export default function App() {
               <Text style={styles.emptyTitle}>
                 Aucune recette trouvée
               </Text>
+
               <Text style={styles.emptyText}>
                 Essayez un autre nom, ingrédient ou région.
               </Text>
@@ -649,7 +670,7 @@ export default function App() {
               onPress={() => setSelected(item)}
             >
               <Image
-                source={{ uri: item.image }}
+                source={{ uri: encodeURI(item.image) }}
                 style={styles.cardImage}
               />
 
@@ -659,9 +680,11 @@ export default function App() {
                     {item.name}
                   </Text>
 
-                  <Text style={styles.region}>
-                    {item.region}
-                  </Text>
+                  <View style={styles.regionBadge}>
+                    <Text style={styles.region}>
+                      {item.region}
+                    </Text>
+                  </View>
                 </View>
 
                 <Text style={styles.description}>
@@ -669,12 +692,13 @@ export default function App() {
                 </Text>
 
                 <Text style={styles.openText}>
-                  Voir la recette ›
+                  Voir la recette  →
                 </Text>
               </View>
             </Pressable>
           )}
         />
+
       </View>
 
       <Modal
@@ -684,9 +708,9 @@ export default function App() {
       >
         {selected && (
           <SafeAreaView style={styles.modalSafe}>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
               <Image
-                source={{ uri: selected.image }}
+                source={{ uri: encodeURI(selected.image) }}
                 style={styles.hero}
               />
 
@@ -704,9 +728,11 @@ export default function App() {
                   {selected.name}
                 </Text>
 
-                <Text style={styles.detailRegion}>
-                  {selected.region}
-                </Text>
+                <View style={styles.detailRegionBadge}>
+                  <Text style={styles.detailRegion}>
+                    {selected.region}
+                  </Text>
+                </View>
 
                 <Text style={styles.detailDescription}>
                   {selected.description}
@@ -752,33 +778,80 @@ export default function App() {
           </SafeAreaView>
         )}
       </Modal>
-    </SafeAreaView>
-  );
-}
+    </View>
+  </SafeAreaView>
+);
+    
+  
+
 
 const styles = StyleSheet.create({
-  safe: {
+    safe: {
     flex: 1,
-    backgroundColor: '#F7F4EE'
+    backgroundColor: '#F5F1E8'
+  },
+
+  page: {
+    flex: 1,
+    backgroundColor: '#F5F1E8'
   },
 
   header: {
-    backgroundColor: '#0B6B3A',
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 20
+    height: 235,
+    justifyContent: 'flex-end'
+  },
+
+  headerImage: {
+    opacity: 0.9
+  },
+
+  headerOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 18,
+    paddingBottom: 20,
+    paddingTop: 25,
+    backgroundColor: 'rgba(5, 70, 35, 0.68)'
   },
 
   logo: {
     color: '#FFFFFF',
-    fontSize: 30,
-    fontWeight: '800'
+    fontSize: 32,
+    fontWeight: '900'
   },
 
   subtitle: {
-    color: '#E8F5ED',
+    color: '#F0FFF5',
     marginTop: 4,
-    fontSize: 14
+    fontSize: 14,
+    fontWeight: '500'
+  },
+
+  searchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    marginTop: 16,
+    paddingHorizontal: 13,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5
+  },
+
+  searchIcon: {
+    fontSize: 25,
+    color: '#0B6B3A',
+    marginRight: 4
+  },
+
+  search: {
+    flex: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 13,
+    fontSize: 15,
+    color: '#222'
   },
 
   content: {
@@ -786,21 +859,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16
   },
 
-  search: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E1DDD4',
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 13,
-    marginTop: 14,
-    fontSize: 15,
-    color: '#222'
-  },
-
   sectionTitle: {
     fontSize: 19,
-    fontWeight: '800',
+    fontWeight: '900',
     color: '#202020',
     marginTop: 16,
     marginBottom: 9
@@ -811,9 +872,9 @@ const styles = StyleSheet.create({
   },
 
   filter: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 15,
     paddingVertical: 9,
-    borderRadius: 20,
+    borderRadius: 22,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#DDD8CE',
@@ -827,34 +888,60 @@ const styles = StyleSheet.create({
 
   filterText: {
     color: '#444',
-    fontWeight: '600'
+    fontWeight: '700'
   },
 
   filterTextActive: {
     color: '#FFFFFF'
   },
 
+  recipeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+
+  recipeCount: {
+    backgroundColor: '#0B6B3A',
+    color: '#FFFFFF',
+    minWidth: 32,
+    textAlign: 'center',
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    borderRadius: 15,
+    fontWeight: '900',
+    overflow: 'hidden'
+  },
+
   list: {
-    paddingBottom: 24
+    paddingBottom: 30
   },
 
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    borderRadius: 18,
     overflow: 'hidden',
-    marginBottom: 14,
+    marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E4E0D8'
+    borderColor: '#E5E0D6',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    elevation: 3
   },
 
   cardImage: {
     width: '100%',
-    height: 190,
+    height: 205,
     backgroundColor: '#DDD'
   },
 
   cardBody: {
-    padding: 14
+    padding: 15
   },
 
   rowBetween: {
@@ -866,27 +953,36 @@ const styles = StyleSheet.create({
   cardTitle: {
     flex: 1,
     fontSize: 20,
-    fontWeight: '800',
-    color: '#202020'
+    fontWeight: '900',
+    color: '#202020',
+    marginRight: 8
+  },
+
+  regionBadge: {
+    backgroundColor: '#E8F5ED',
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    borderRadius: 12
   },
 
   region: {
     color: '#0B6B3A',
-    fontWeight: '700',
-    fontSize: 12,
-    marginLeft: 8
+    fontWeight: '800',
+    fontSize: 11
   },
 
   description: {
     color: '#666',
-    marginTop: 7,
-    lineHeight: 20
+    marginTop: 8,
+    lineHeight: 20,
+    fontSize: 14
   },
 
   openText: {
     color: '#0B6B3A',
-    fontWeight: '800',
-    marginTop: 10
+    fontWeight: '900',
+    marginTop: 12,
+    fontSize: 14
   },
 
   empty: {
@@ -896,42 +992,44 @@ const styles = StyleSheet.create({
 
   emptyTitle: {
     fontSize: 18,
-    fontWeight: '800'
+    fontWeight: '800',
+    color: '#222'
   },
 
   emptyText: {
     color: '#666',
-    marginTop: 6
+    marginTop: 6,
+    textAlign: 'center'
   },
 
   modalSafe: {
     flex: 1,
-    backgroundColor: '#F7F4EE'
+    backgroundColor: '#F5F1E8'
   },
 
   hero: {
     width: '100%',
-    height: 260,
+    height: 280,
     backgroundColor: '#DDD'
   },
 
   detail: {
     padding: 18,
-    paddingBottom: 40
+    paddingBottom: 45
   },
 
   close: {
     alignSelf: 'flex-end',
     backgroundColor: '#E8E4DB',
-    paddingHorizontal: 13,
-    paddingVertical: 8,
-    borderRadius: 18,
-    marginBottom: 10
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    borderRadius: 20,
+    marginBottom: 12
   },
 
   closeText: {
     color: '#333',
-    fontWeight: '700'
+    fontWeight: '800'
   },
 
   detailTitle: {
@@ -940,23 +1038,32 @@ const styles = StyleSheet.create({
     color: '#202020'
   },
 
+  detailRegionBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#E8F5ED',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 15,
+    marginTop: 8
+  },
+
   detailRegion: {
     color: '#0B6B3A',
-    fontWeight: '800',
-    marginTop: 4
+    fontWeight: '900'
   },
 
   detailDescription: {
     color: '#555',
-    lineHeight: 21,
-    marginTop: 10
+    lineHeight: 22,
+    marginTop: 12,
+    fontSize: 15
   },
 
   detailHeading: {
     fontSize: 21,
     fontWeight: '900',
-    marginTop: 24,
-    marginBottom: 10,
+    marginTop: 25,
+    marginBottom: 11,
     color: '#202020'
   },
 
@@ -970,13 +1077,13 @@ const styles = StyleSheet.create({
   step: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 13
+    marginBottom: 14
   },
 
   number: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 31,
+    height: 31,
+    borderRadius: 16,
     backgroundColor: '#0B6B3A',
     alignItems: 'center',
     justifyContent: 'center',
@@ -985,7 +1092,7 @@ const styles = StyleSheet.create({
 
   numberText: {
     color: '#FFFFFF',
-    fontWeight: '800'
+    fontWeight: '900'
   },
 
   stepText: {
@@ -996,6 +1103,8 @@ const styles = StyleSheet.create({
     paddingTop: 3
   }
 });
+
+
           
           
                           
