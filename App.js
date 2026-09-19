@@ -12,7 +12,9 @@ import {
   Image,
   StatusBar,
   Alert,
+  Share,
 } from 'react-native';
+
 
 const COLORS = {
   primary: '#E85D04',
@@ -413,7 +415,22 @@ function RecipeModal({ recipe, visible, onClose, onAddShopping }) {
                 <Text style={styles.stepText}>{step}</Text>
               </View>
             ))}
-
+<Pressable
+  style={styles.shareButton}
+  onPress={() =>
+    Share.share({
+      message:
+        `🇨🇲 ${recipe.name}\n\n` +
+        `${recipe.description}\n\n` +
+        `📍 Région : ${recipe.region}\n` +
+        `⏱ Temps : ${recipe.time}\n` +
+        `⭐ Note : ${recipe.rating}\n\n` +
+        `Découvrez cette recette sur Cam Food !`,
+    })
+  }
+>
+  <Text style={styles.shareButtonText}>📤 Partager la recette</Text>
+</Pressable>
             <Pressable
               style={styles.mainButton}
               onPress={() => {
@@ -1408,7 +1425,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 21,
   },
+shareButton: {
+  height: 54,
+  borderRadius: 16,
+  backgroundColor: COLORS.white,
+  borderWidth: 2,
+  borderColor: COLORS.primary,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: 12,
+},
 
+shareButtonText: {
+  color: COLORS.primary,
+  fontSize: 15,
+  fontWeight: '900',
+},
   mainButton: {
     height: 54,
     borderRadius: 16,
