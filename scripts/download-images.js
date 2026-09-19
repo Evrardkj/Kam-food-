@@ -169,8 +169,12 @@ async function getImageUrl(title) {
 
   for (const page of Object.values(pages)) {
     if (page.imageinfo && page.imageinfo[0]) {
-      return page.imageinfo[0].thumburl ||
-        page.imageinfo[0].url;
+      const sourceUrl =
+  page.imageinfo[0].thumburl ||
+  page.imageinfo[0].url;
+
+return `https://wsrv.nl/?url=${encodeURIComponent(sourceUrl)}&w=960&q=85&output=jpg`;
+      
     }
   }
 
