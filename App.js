@@ -546,28 +546,29 @@ Modal,
   }
 ];
 const RECIPE_IMAGES = [
-  'https://upload.wikimedia.org/wikipedia/commons/e/e9/Ndol%C3%A9_camerounais.JPG',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Ndol%C3%A9_camerounais.JPG/960px-Ndol%C3%A9_camerounais.JPG',
   'https://upload.wikimedia.org/wikipedia/commons/9/91/Ndol%C3%A8_%C3%A0_la_viande%2C_morue_et_crevettes.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/3/30/Poulet_DG.JPG',
-  'https://upload.wikimedia.org/wikipedia/commons/e/ef/Le_Eru%2C_un_plat_camerounais.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/e/e2/Garri_and_Eru.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/b/b3/Water_fufu_and_Eru.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/9/9f/Achu_meal.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/1/1d/Taro_sauce_jaune_avec_peau_de_boeuf.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/7/7e/Koki_Beans.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/d/d8/Koki_and_ripe_plantains.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/e/ed/Kwacoco_bible.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/e/ec/Kati_kati_cameroun.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/6/65/Fufu_corn_and_khati_khati.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/f/f8/Poisson_brais%C3%A9_et_fleur_de_citron..JPG',
-  'https://upload.wikimedia.org/wikipedia/commons/7/7c/Sanga%2C_Plat_camerounais.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/1/1b/Mbongo_Tchobi_%28sauce_noir%29.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Poulet_GD_%28fried_chicken_with_ripe_plantains_and_mixed_vegetables%29.jpg/960px-Poulet_GD_%28fried_chicken_with_ripe_plantains_and_mixed_vegetables%29.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Le_Eru%2C_un_plat_camerounais.jpg/960px-Le_Eru%2C_un_plat_camerounais.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Garri_and_Eru.jpg/960px-Garri_and_Eru.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Water_fufu_and_Eru.jpg/960px-Water_fufu_and_Eru.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Achu_meal.jpg/960px-Achu_meal.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Taro_sauce_jaune_avec_peau_de_boeuf.jpg/960px-Taro_sauce_jaune_avec_peau_de_boeuf.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Koki_Beans.jpg/960px-Koki_Beans.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Koki_and_ripe_plantains.jpg/500px-Koki_and_ripe_plantains.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Kwacoco_bible.jpg/960px-Kwacoco_bible.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Kati_kati_cameroun.jpg/960px-Kati_kati_cameroun.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Fufu_corn_and_khati_khati.jpg/500px-Fufu_corn_and_khati_khati.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Poisson_brais%C3%A9_et_fleur_de_citron..JPG/960px-Poisson_brais%C3%A9_et_fleur_de_citron..JPG',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Sanga%2C_Plat_camerounais.jpg/960px-Sanga%2C_Plat_camerounais.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Mbongo_Tchobi_%28sauce_noir%29.jpg/960px-Mbongo_Tchobi_%28sauce_noir%29.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/1/1c/Ndomba_de_poulet.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/f/f3/Ndomba_de_porc_et_frites_de_plantain_m%C3%BBr.jpg',
-  'https://upload.wikimedia.org/wikipedia/commons/5/54/Suya.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Ndomba_de_porc_et_frites_de_plantain_m%C3%BBr.jpg/330px-Ndomba_de_porc_et_frites_de_plantain_m%C3%BBr.jpg',
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Soya_or_Suya.jpg/500px-Soya_or_Suya.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/6/69/Le_mets_de_pistache_%28Nnam_ngon%29.jpg',
   'https://upload.wikimedia.org/wikipedia/commons/a/a7/Mintumba.jpg'
 ];
+
   
 
 
