@@ -1,3 +1,4 @@
+
 name: Cam Food APK
 
 on:
@@ -9,14 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Recuperer le projet
+      - name: Récupérer le projet
         uses: actions/checkout@v5
 
       - name: Installer Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          
 
       - name: Installer Expo et EAS
         uses: expo/expo-github-action@v8
@@ -24,11 +24,15 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Installer les dependances
+      - name: Installer les dépendances
         run: npm install
+
+      - name: Télécharger les images des recettes
+        run: node scripts/download-images.js
 
       - name: Initialiser le projet EAS
         run: eas init --force --non-interactive
 
       - name: Construire l'APK
         run: eas build --platform android --profile preview --non-interactive --wait
+      
