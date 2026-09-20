@@ -1062,7 +1062,7 @@ function RecipeCard({ recipe, favorite, onFavorite, onOpen }) {
   return (
     <Pressable style={styles.card} onPress={() => onOpen(recipe)}>
       <View style={styles.imageWrap}>
-        <Image source={{ uri: recipe.image }} style={styles.cardImage} />
+        <Image source={ recipe.image } style={styles.cardImage} />
         <View style={styles.emojiBadge}>
           <Text>{recipe.emoji}</Text>
         </View>
