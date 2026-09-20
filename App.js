@@ -977,7 +977,7 @@ const RECIPE_IMAGES = [
   require('./assets/recipes/mintumba.jpg'),
   require('./assets/recipes/okok.jpg'),
   require('./assets/recipes/sauce_gombo.jpg'),
-  require('./assets/recipes/batons_manioc.jpg'),
+  require('./assets/recipes/sauce_arachides.jpg'),
   require('./assets/recipes/miondo.jpg'),
   require('./assets/recipes/bobolo.jpg'),
   require('./assets/recipes/kondre.jpg'),
