@@ -962,7 +962,7 @@ const IMAGES = {
   plantains_frit: require('./assets/recipes/plantains_frit.jpg'),
   water_fufu_eru: require('./assets/recipes/water_fufu_eru.jpg'),
   sauce_arachides: require('./assets/recipes/sauce_arachides.jpg'),
-  taro_sauce_jaune: require('./assets/recipes/taro_sauce_jaune.jpg'),
+  taro_sauce_jaune: require('./assets/recipes/taro.jpg'),
   koki: require('./assets/recipes/koki.jpg'),
   mbanga: require('./assets/recipes/mbanga.jpg'),
   kondre: require('./assets/recipes/kondre.jpg'),
