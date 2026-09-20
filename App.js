@@ -954,7 +954,7 @@ const RECIPES = [
   },
 ];
 const RECIPE_IMAGES = [
-  require('./assets/recipes/ndole.jpg'),
+  require('./assets/recipes/grillade_poulet.jpg'),
   require('./assets/recipes/ndole_crevettes.jpg'),
   require('./assets/recipes/poulet_dg.jpg'),
   require('./assets/recipes/eru.jpg'),
