@@ -961,7 +961,7 @@ const IMAGES = {
   eru: require('./assets/recipes/eru.jpg'),
   plantains_frit: require('./assets/recipes/plantains_frit.jpg'),
   water_fufu_eru: require('./assets/recipes/water_fufu_eru.jpg'),
-  sauce_arachide: require('./assets/recipes/sauce_arachide.jpg'),
+  sauce_arachides: require('./assets/recipes/sauce_arachides.jpg'),
   taro_sauce_jaune: require('./assets/recipes/taro_sauce_jaune.jpg'),
   koki: require('./assets/recipes/koki.jpg'),
   mbanga: require('./assets/recipes/mbanga.jpg'),
