@@ -953,7 +953,42 @@ const RECIPES = [
     ],
   },
 ];
+const RECIPE_IMAGES = [
+  require('./assets/recipes/ndole.jpg'),
+  require('./assets/recipes/ndole_crevettes.jpg'),
+  require('./assets/recipes/poulet_dg.jpg'),
+  require('./assets/recipes/eru.jpg'),
+  require('./assets/recipes/garri_eru.jpg'),
+  require('./assets/recipes/water_fufu_eru.jpg'),
+  require('./assets/recipes/achu.jpg'),
+  require('./assets/recipes/taro.jpg'),
+  require('./assets/recipes/koki.jpg'),
+  require('./assets/recipes/koki_plantain.jpg'),
+  require('./assets/recipes/kwacoco.jpg'),
+  require('./assets/recipes/kati_kati.jpg'),
+  require('./assets/recipes/fufu_kati.jpg'),
+  require('./assets/recipes/poisson_braise.jpg'),
+  require('./assets/recipes/sanga.jpg'),
+  require('./assets/recipes/mbongo.jpg'),
+  require('./assets/recipes/ndomba_poulet.jpg'),
+  require('./assets/recipes/ndomba_porc.jpg'),
+  require('./assets/recipes/suya.jpg'),
+  require('./assets/recipes/nnam_ngon.jpg'),
+  require('./assets/recipes/mintumba.jpg'),
+  require('./assets/recipes/okok.jpg'),
+  require('./assets/recipes/sauce_gombo.jpg'),
+  require('./assets/recipes/batons_manioc.jpg'),
+  require('./assets/recipes/miondo.jpg'),
+  require('./assets/recipes/bobolo.jpg'),
+  require('./assets/recipes/kondre.jpg'),
+  require('./assets/recipes/porridge_plantain.jpg'),
+  require('./assets/recipes/macabo_haricots.jpg'),
+  require('./assets/recipes/couscous_mais.jpg'),
+];
 
+RECIPES.forEach((recipe, index) => {
+  recipe.image = RECIPE_IMAGES[index];
+});
 const REGIONS = [
   'Toutes',
   'Centre',
