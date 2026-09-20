@@ -953,42 +953,46 @@ const RECIPES = [
     ],
   },
 ];
-const RECIPE_IMAGES = [
-  require('./assets/recipes/grillade_poulet.jpg'),
-  require('./assets/recipes/ndole_crevettes.jpg'),
-  require('./assets/recipes/poulet_dg.jpg'),
-  require('./assets/recipes/eru.jpg'),
-  require('./assets/recipes/plantains_frit.jpg'),
-  require('./assets/recipes/water_fufu_eru.jpg'),
-  require('./assets/recipes/sauce_tomate.jpg'),
-  require('./assets/recipes/taro.jpg'),
-  require('./assets/recipes/koki.jpg'),
-  require('./assets/recipes/koki_plantain.jpg'),
-  require('./assets/recipes/kwacoco.jpg'),
-  require('./assets/recipes/kati_kati.jpg'),
-  require('./assets/recipes/fufu_kati.jpg'),
-  require('./assets/recipes/poisson_braise.jpg'),
-  require('./assets/recipes/sanga.jpg'),
-  require('./assets/recipes/mbongo.jpg'),
-  require('./assets/recipes/ndomba_poulet.jpg'),
-  require('./assets/recipes/ndomba_porc.jpg'),
-  require('./assets/recipes/suya.jpg'),
-  require('./assets/recipes/nnam_ngon.jpg'),
-  require('./assets/recipes/mintumba.jpg'),
-  require('./assets/recipes/okok.jpg'),
-  require('./assets/recipes/sauce_gombo.jpg'),
-  require('./assets/recipes/sauce_arachides.jpg'),
-  require('./assets/recipes/miondo.jpg'),
-  require('./assets/recipes/bobolo.jpg'),
-  require('./assets/recipes/kondre.jpg'),
-  require('./assets/recipes/porridge_plantain.jpg'),
-  require('./assets/recipes/macabo_haricots.jpg'),
-  require('./assets/recipes/couscous_mais.jpg'),
-];
 
-RECIPES.forEach((recipe, index) => {
-  recipe.image = RECIPE_IMAGES[index];
+const IMAGES = {
+  grillade_poulet: require('./assets/recipes/grillade_poulet.jpg'),
+  ndole_crevettes: require('./assets/recipes/ndole_crevettes.jpg'),
+  poulet_dg: require('./assets/recipes/poulet_dg.jpg'),
+  eru: require('./assets/recipes/eru.jpg'),
+  plantains_frit: require('./assets/recipes/plantains_frit.jpg'),
+  water_fufu_eru: require('./assets/recipes/water_fufu_eru.jpg'),
+  sauce_arachide: require('./assets/recipes/sauce_arachide.jpg'),
+  taro_sauce_jaune: require('./assets/recipes/taro_sauce_jaune.jpg'),
+  koki: require('./assets/recipes/koki.jpg'),
+  mbanga: require('./assets/recipes/mbanga.jpg'),
+  kondre: require('./assets/recipes/kondre.jpg'),
+  achu_soup: require('./assets/recipes/achu_soup.jpg'),
+  poulet_braise: require('./assets/recipes/poulet_braise.jpg'),
+  poisson_braise: require('./assets/recipes/poisson_braise.jpg'),
+  beignets_haricots: require('./assets/recipes/beignets_haricots.jpg'),
+  okok: require('./assets/recipes/okok.jpg'),
+  ndomba: require('./assets/recipes/ndomba.jpg'),
+  ekwang: require('./assets/recipes/ekwang.jpg'),
+  kwacoco: require('./assets/recipes/kwacoco.jpg'),
+  folong: require('./assets/recipes/folong.jpg'),
+  corn_chaff: require('./assets/recipes/corn_chaff.jpg'),
+  sanga: require('./assets/recipes/sanga.jpg'),
+  sauce_gombo: require('./assets/recipes/sauce_gombo.jpg'),
+  ndole_plantain: require('./assets/recipes/ndole_plantain.jpg'),
+  miondo: require('./assets/recipes/miondo.jpg'),
+  bobolo: require('./assets/recipes/bobolo.jpg'),
+  soya: require('./assets/recipes/soya.jpg'),
+  brochettes: require('./assets/recipes/brochettes.jpg'),
+  riz_sauce: require('./assets/recipes/riz_sauce.jpg'),
+  banane_malaxee: require('./assets/recipes/banane_malaxee.jpg'),
+};
+
+const getImage = (key) => IMAGES[key] || IMAGES['grillade_poulet'];
+
+RECIPES.forEach((recipe) => {
+  recipe.image = getImage(recipe.imageKey);
 });
+
 const REGIONS = [
   'Toutes',
   'Centre',
